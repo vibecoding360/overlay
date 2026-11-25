@@ -44,9 +44,14 @@
 
     /* Hero Broadcast Timer Scaling */
     .hero-timer-digits {
-      font-size: clamp(4.25rem, 8.5vw, 7.85rem);
+      font-size: clamp(5.8rem, 11vw, 10.5rem);
+      font-weight: 900;
       line-height: 0.95;
       letter-spacing: -0.04em;
+      background: linear-gradient(90deg, #00FF66 0%, #66ff99 48%, #FF5E00 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 24px rgba(0, 255, 102, 0.35)) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.95));
     }
 
     /* Frosted Obsidian Studio Glass */
@@ -200,7 +205,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label for="input-host-name" class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  HOST / CHANNEL NAME
+                  CHANNEL NAME
                 </label>
                 <input
                   id="input-host-name"
@@ -213,7 +218,7 @@
               <!-- Platform / Stream Tag -->
               <div>
                 <label for="input-platform-tag" class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300 mb-2">
-                  PLATFORM / STREAM TAG
+                  PLATFORM BADGE
                 </label>
                 <input
                   id="input-platform-tag"
@@ -232,7 +237,7 @@
               <input
                 id="input-session-title"
                 type="text"
-                placeholder="e.g. 12-Hour Deep Focus Study Marathon"
+                placeholder="e.g. MARATHON STUDY"
                 class="w-full rounded-xl bg-obsidian-850 border border-white/10 focus:border-[#00FF66] focus:ring-2 focus:ring-[#00FF66]/20 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition"
               />
             </div>
@@ -247,9 +252,10 @@
                 onchange="handleModeSelectionChange()"
                 class="w-full rounded-xl bg-obsidian-850 border border-white/10 focus:border-[#00FF66] focus:ring-2 focus:ring-[#00FF66]/20 px-4 py-3 text-sm text-white outline-none transition cursor-pointer"
               >
-                <option value="stopwatch">Marathon Stopwatch (Open-Ended)</option>
-                <option value="pomodoro">Pomodoro Cycles (50m Focus / 10m Break)</option>
-                <option value="countdown">Countdown Target (e.g. 6h / 10h / 12h)</option>
+                <option value="stopwatch">Stopwatch (Open-Ended)</option>
+                <option value="pomodoro50">Pomodoro (50/10)</option>
+                <option value="pomodoro25">Pomodoro (25/5)</option>
+                <option value="countdown">Marathon Countdown</option>
               </select>
 
               <!-- Pomodoro Custom Cycle Inputs -->
@@ -321,7 +327,7 @@
                 <label for="input-agenda-tasks" class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
                   SESSION AGENDA (ONE TASK PER LINE)
                 </label>
-                <span id="agenda-line-count" class="text-xs font-mono text-slate-400 tabular-nums">4 tasks</span>
+                <span id="agenda-line-count" class="text-xs font-mono text-slate-400 tabular-nums">3 tasks</span>
               </div>
               <textarea
                 id="input-agenda-tasks"
@@ -329,10 +335,9 @@
                 oninput="updateAgendaLineCounter()"
                 placeholder="Enter one study milestone per line..."
                 class="w-full rounded-xl bg-obsidian-850 border border-white/10 focus:border-[#00FF66] focus:ring-2 focus:ring-[#00FF66]/20 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition leading-relaxed resize-y"
-              >Quantitative Aptitude — 50 Practice Sets
-Editorial & Reading Comprehension Analysis
-General Awareness & Static Revision
-Full-Length Mock Test & Error Log</textarea>
+              >marathon study
+GATE / SSC JE Technical Revision
+PYQ Practice Set</textarea>
             </div>
 
             <!-- Primary CTA Button -->
@@ -418,19 +423,20 @@ Full-Length Mock Test & Error Log</textarea>
         </div>
 
         <!-- MAIN TELEMETRY BROADCAST HUD -->
-        <div class="max-w-6xl w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <div class="max-w-[1440px] w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-[1.65fr_1fr] gap-6 items-start">
 
-          <!-- LEFT PANEL (7 Cols): Primary Telemetry & Hero Timer -->
-          <div class="lg:col-span-7 studio-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+          <!-- LEFT PANEL (~65% Width): Primary Telemetry & Hero Timer -->
+          <div class="studio-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
             <!-- Precision Top Neon Green to Electric Orange Accent Line -->
             <div class="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#00FF66] via-[#00FF66]/70 to-[#FF5E00]"></div>
 
             <div>
               <!-- Top Telemetry Status Strip -->
-              <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
                 <div class="flex items-center gap-2.5">
+                  <span class="inline-block h-2.5 w-2.5 rounded-full bg-[#00FF66] animate-pulse shadow-[0_0_12px_#00FF66]"></span>
                   <span class="font-display text-xs sm:text-sm font-bold tracking-wider uppercase text-white">
-                    <span id="hud-host-name">BRO_STUDIES</span>
+                    <span id="hud-host-name">BRO_STUDIES</span> LIVE
                   </span>
                   <span class="text-slate-600">•</span>
                   <span id="hud-platform-tag" class="text-[11px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 rounded bg-[#FF5E00]/15 text-[#FF5E00] border border-[#FF5E00]/30">
@@ -453,22 +459,22 @@ Full-Length Mock Test & Error Log</textarea>
               </div>
 
               <!-- Session Title -->
-              <h2 id="hud-session-title" class="font-display text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white mb-6 leading-snug">
-                12-Hour Deep Focus Study Marathon
+              <h2 id="hud-session-title" class="font-display text-2xl sm:text-3xl font-extrabold uppercase tracking-tight text-white mb-5 leading-tight">
+                MARATHON STUDY
               </h2>
 
               <!-- Massive Razor-Sharp Hero Timer Box -->
-              <div class="rounded-2xl bg-obsidian-950/90 border border-white/[0.08] px-4 py-6 sm:py-8 mb-6 text-center relative overflow-hidden">
+              <div class="rounded-2xl bg-[#06090e]/[0.92] border border-white/[0.10] px-4 py-6 sm:py-8 mb-6 text-center relative overflow-hidden shadow-inner">
                 <div class="flex items-center justify-center gap-2 mb-2">
                   <span id="hud-timer-active-bar" class="h-1.5 w-6 rounded-full bg-[#00FF66]"></span>
-                  <p id="hud-timer-mode-label" class="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-slate-400">
+                  <p id="hud-timer-mode-label" class="text-[11px] font-mono font-bold uppercase tracking-[0.22em] text-slate-300">
                     MARATHON STOPWATCH
                   </p>
                 </div>
 
                 <div
                   id="hud-hero-timer"
-                  class="hero-timer-digits font-mono font-extrabold text-[#F8FAFC] tabular-nums select-none tracking-tight my-1"
+                  class="hero-timer-digits font-mono tabular-nums select-none my-1 whitespace-nowrap"
                 >
                   00:00:00
                 </div>
@@ -486,19 +492,19 @@ Full-Length Mock Test & Error Log</textarea>
             <div class="space-y-4">
               <!-- Telemetry Strip -->
               <div class="grid grid-cols-3 gap-2.5 sm:gap-3">
-                <div class="rounded-xl bg-obsidian-950/80 border border-white/[0.07] px-3 py-2.5">
+                <div class="rounded-xl bg-obsidian-950/85 border border-white/[0.07] px-3.5 py-2.5">
                   <p class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">TOTAL FOCUS</p>
                   <p id="metric-total-focus" class="font-mono text-sm sm:text-base font-bold text-[#00FF66] tabular-nums mt-0.5">
                     00:00:00
                   </p>
                 </div>
-                <div class="rounded-xl bg-obsidian-950/80 border border-white/[0.07] px-3 py-2.5">
+                <div class="rounded-xl bg-obsidian-950/85 border border-white/[0.07] px-3.5 py-2.5">
                   <p class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">SESSIONS</p>
                   <p id="metric-sessions-count" class="font-mono text-sm sm:text-base font-bold text-white tabular-nums mt-0.5">
                     01
                   </p>
                 </div>
-                <div class="rounded-xl bg-obsidian-950/80 border border-white/[0.07] px-3 py-2.5">
+                <div class="rounded-xl bg-obsidian-950/85 border border-white/[0.07] px-3.5 py-2.5">
                   <p class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">COMPLETION</p>
                   <p id="metric-completion-pct" class="font-mono text-sm sm:text-base font-bold text-[#FF5E00] tabular-nums mt-0.5">
                     0%
@@ -531,7 +537,7 @@ Full-Length Mock Test & Error Log</textarea>
                     onclick="recordMilestoneLap()"
                     class="px-4 py-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-[#FF5E00] font-semibold text-xs sm:text-sm transition cursor-pointer"
                   >
-                    Log Milestone
+                    +1 Lap / Session
                   </button>
                   <button
                     id="btn-pomodoro-skip"
@@ -551,7 +557,7 @@ Full-Length Mock Test & Error Log</textarea>
               <!-- Compact Milestone / Lap Strip (Shown only when milestones are logged) -->
               <div id="milestones-panel" class="hidden pt-3 border-t border-white/[0.07]">
                 <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2">
-                  <span class="uppercase tracking-wider font-bold text-slate-300">LOGGED MILESTONES</span>
+                  <span class="uppercase tracking-wider font-bold text-slate-300">LOGGED SESSIONS / LAPS</span>
                   <button type="button" onclick="clearMilestones()" class="hover:text-[#FF5E00] transition cursor-pointer">
                     Clear
                   </button>
@@ -561,46 +567,44 @@ Full-Length Mock Test & Error Log</textarea>
             </div>
           </div>
 
-          <!-- RIGHT PANEL (5 Cols): Clean Session Agenda Card -->
-          <div class="lg:col-span-5 studio-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden">
+          <!-- RIGHT PANEL (~35% Width): Content-Hugging Session Agenda Card (Zero Empty Bottom Space) -->
+          <div class="self-start h-fit min-h-0 studio-panel rounded-3xl px-6 py-5 relative overflow-hidden">
             <!-- Precision Left Edge Neon Accent -->
             <div class="absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-[#00FF66] to-[#FF5E00]"></div>
 
-            <div>
-              <!-- Agenda Header -->
-              <div class="flex items-center justify-between gap-2 mb-3">
-                <div class="flex items-center gap-2">
-                  <span class="h-2 w-2 rounded-full bg-[#FF5E00]"></span>
-                  <h3 class="font-mono text-xs font-bold uppercase tracking-[0.16em] text-white">
-                    SESSION AGENDA
-                  </h3>
-                </div>
-                <span id="agenda-badge-count" class="font-mono text-[11px] font-bold px-2.5 py-1 rounded-lg bg-obsidian-950/90 border border-white/10 text-[#00FF66] tabular-nums">
-                  0 / 0 COMPLETED
-                </span>
+            <!-- Agenda Header -->
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-2">
+                <span class="h-2.5 w-2.5 rounded-full bg-[#FF5E00] shadow-[0_0_10px_#FF5E00]"></span>
+                <h3 class="font-mono text-xs font-bold uppercase tracking-[0.16em] text-white">
+                  SESSION AGENDA
+                </h3>
               </div>
-
-              <!-- Sleek Dual-Color Progress Track -->
-              <div class="w-full h-1.5 rounded-full bg-obsidian-950 overflow-hidden mb-5">
-                <div id="agenda-progress-bar" class="h-full bg-gradient-to-r from-[#00FF66] to-[#FF5E00] transition-all duration-300 w-0"></div>
-              </div>
-
-              <!-- Spacious Task Rows -->
-              <ul id="agenda-task-list" class="space-y-2.5 max-h-[370px] overflow-y-auto pr-1"></ul>
+              <span id="agenda-badge-count" class="font-mono text-[11px] font-bold px-2.5 py-1 rounded-lg bg-obsidian-950/90 border border-[#00FF66]/30 text-[#00FF66] tabular-nums">
+                0 / 0 COMPLETED
+              </span>
             </div>
 
-            <!-- Inline Quick Add (Auto-hides in idle broadcast mode for a clean stream) -->
-            <div class="chrome-autohide pt-4 mt-4 border-t border-white/[0.07]">
+            <!-- Sleek Dual-Color Progress Track -->
+            <div class="w-full h-1.5 rounded-full bg-obsidian-950 overflow-hidden mb-3.5">
+              <div id="agenda-progress-bar" class="h-full bg-gradient-to-r from-[#00FF66] to-[#FF5E00] transition-all duration-300 w-0"></div>
+            </div>
+
+            <!-- Content-Hugging Task Rows -->
+            <ul id="agenda-task-list" class="space-y-2 max-h-[420px] overflow-y-auto pr-0.5"></ul>
+
+            <!-- Inline Quick Add (Auto-hides cleanly when mouse is idle so zero space is wasted on stream) -->
+            <div class="chrome-autohide pt-3 mt-3 border-t border-white/[0.07]">
               <form onsubmit="handleInlineTaskAdd(event)" class="flex gap-2">
                 <input
                   id="inline-task-input"
                   type="text"
                   placeholder="Add agenda item..."
-                  class="flex-1 rounded-xl bg-obsidian-950/90 border border-white/10 focus:border-[#00FF66] px-3.5 py-2 text-xs sm:text-sm text-white placeholder-slate-500 outline-none"
+                  class="flex-1 rounded-xl bg-obsidian-950/90 border border-white/10 focus:border-[#00FF66] px-3 py-1.5 text-xs text-white placeholder-slate-500 outline-none"
                 />
                 <button
                   type="submit"
-                  class="px-3.5 py-2 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 border border-white/10 text-xs sm:text-sm font-semibold text-[#00FF66] transition cursor-pointer shrink-0"
+                  class="px-3 py-1.5 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 border border-white/10 text-xs font-semibold text-[#00FF66] transition cursor-pointer shrink-0"
                 >
                   + Add
                 </button>
@@ -695,23 +699,22 @@ Full-Length Mock Test & Error Log</textarea>
 
   <script>
     // ==================== APPLICATION STATE & STORAGE ====================
-    const STORAGE_KEY = 'bro_studies_marathon_state_v1';
+    const STORAGE_KEY = 'bro_studies_marathon_state_v2';
 
     const state = {
       view: 'setup', // 'setup' | 'live'
       hostName: 'BRO_STUDIES',
       platformTag: 'YOUTUBE LIVE',
-      sessionTitle: '12-Hour Deep Focus Study Marathon',
-      timerMode: 'stopwatch', // 'stopwatch' | 'pomodoro' | 'countdown'
+      sessionTitle: 'MARATHON STUDY',
+      timerMode: 'stopwatch', // 'stopwatch' | 'pomodoro50' | 'pomodoro25' | 'countdown'
       focusMins: 50,
       breakMins: 10,
       targetHours: 6,
       targetMinutes: 0,
       tasks: [
-        { id: 1, text: 'Quantitative Aptitude — 50 Practice Sets', done: false },
-        { id: 2, text: 'Editorial & Reading Comprehension Analysis', done: false },
-        { id: 3, text: 'General Awareness & Static Revision', done: false },
-        { id: 4, text: 'Full-Length Mock Test & Error Log', done: false },
+        { id: 1, text: 'marathon study', done: false },
+        { id: 2, text: 'GATE / SSC JE Technical Revision', done: false },
+        { id: 3, text: 'PYQ Practice Set', done: false },
       ],
       // Live Runtime Telemetry
       isRunning: false,
@@ -728,78 +731,52 @@ Full-Length Mock Test & Error Log</textarea>
     let toastTimer = null;
     let idleChromeTimer = null;
 
-    // ==================== PERSISTENCE (localStorage + URL Params) ====================
-    function saveStateToStorage() {
-      try {
-        const snapshot = {
-          hostName: state.hostName,
-          platformTag: state.platformTag,
-          sessionTitle: state.sessionTitle,
-          timerMode: state.timerMode,
-          focusMins: state.focusMins,
-          breakMins: state.breakMins,
-          targetHours: state.targetHours,
-          targetMinutes: state.targetMinutes,
-          tasks: state.tasks,
-          timerSeconds: state.timerSeconds,
-          totalFocusSeconds: state.totalFocusSeconds,
-          completedCycles: state.completedCycles,
-          pomodoroPhase: state.pomodoroPhase,
-          milestones: state.milestones,
-        };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
-      } catch (e) {
-        // Ignore storage quota / sandbox restrictions
-      }
+    function isPomodoroMode(mode = state.timerMode) {
+      return mode === 'pomodoro50' || mode === 'pomodoro25' || mode === 'pomodoro';
     }
 
-    function loadSavedState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed && typeof parsed === 'object') {
+    // ==================== PERSISTENCE (localStorage + URL Params) ====================
+    function saveStateToStorage() {
+// ... existing code ... -->
             if (typeof parsed.hostName === 'string') state.hostName = parsed.hostName;
             if (typeof parsed.platformTag === 'string') state.platformTag = parsed.platformTag;
             if (typeof parsed.sessionTitle === 'string') state.sessionTitle = parsed.sessionTitle;
-            if (['stopwatch', 'pomodoro', 'countdown'].includes(parsed.timerMode)) state.timerMode = parsed.timerMode;
+            if (['stopwatch', 'pomodoro50', 'pomodoro25', 'pomodoro', 'countdown'].includes(parsed.timerMode)) {
+              state.timerMode = parsed.timerMode === 'pomodoro' ? 'pomodoro50' : parsed.timerMode;
+            }
             if (Number.isFinite(parsed.focusMins)) state.focusMins = Math.max(1, parsed.focusMins);
             if (Number.isFinite(parsed.breakMins)) state.breakMins = Math.max(1, parsed.breakMins);
-            if (Number.isFinite(parsed.targetHours)) state.targetHours = Math.max(0, parsed.targetHours);
-            if (Number.isFinite(parsed.targetMinutes)) state.targetMinutes = Math.max(0, Math.min(59, parsed.targetMinutes));
-            if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
-            if (Number.isFinite(parsed.timerSeconds)) state.timerSeconds = Math.max(0, parsed.timerSeconds);
-            if (Number.isFinite(parsed.totalFocusSeconds)) state.totalFocusSeconds = Math.max(0, parsed.totalFocusSeconds);
-            if (Number.isFinite(parsed.completedCycles)) state.completedCycles = Math.max(1, parsed.completedCycles);
-            if (['focus', 'break'].includes(parsed.pomodoroPhase)) state.pomodoroPhase = parsed.pomodoroPhase;
-            if (Array.isArray(parsed.milestones)) state.milestones = parsed.milestones;
-          }
-        }
-      } catch (e) {
-        // Ignore parse errors
-      }
-    }
-
-    function parseUrlParameters() {
-      try {
-        const params = new URLSearchParams(window.location.search);
+// ... existing code ... -->
         const isLive = params.get('live') === '1';
 
-        if (params.has('name')) state.hostName = params.get('name') || 'BRO_STUDIES';
+        if (params.has('channel')) state.hostName = params.get('channel') || 'BRO_STUDIES';
+        else if (params.has('name')) state.hostName = params.get('name') || 'BRO_STUDIES';
+
         if (params.has('platform')) state.platformTag = params.get('platform') || 'YOUTUBE LIVE';
-        if (params.has('session')) state.sessionTitle = params.get('session') || 'Study Marathon';
+        if (params.has('session')) state.sessionTitle = params.get('session') || 'MARATHON STUDY';
         if (params.has('mode')) {
           const m = params.get('mode');
-          if (['stopwatch', 'pomodoro', 'countdown'].includes(m)) state.timerMode = m;
+          if (['stopwatch', 'pomodoro50', 'pomodoro25', 'pomodoro', 'countdown'].includes(m)) {
+            state.timerMode = m === 'pomodoro' ? 'pomodoro50' : m;
+            if (state.timerMode === 'pomodoro25') {
+              state.focusMins = 25;
+              state.breakMins = 5;
+            } else if (state.timerMode === 'pomodoro50') {
+              state.focusMins = 50;
+              state.breakMins = 10;
+            }
+          }
         }
-        if (params.has('focus')) state.focusMins = Math.max(1, parseInt(params.get('focus'), 10) || 50);
-        if (params.has('break')) state.breakMins = Math.max(1, parseInt(params.get('break'), 10) || 10);
+        if (params.has('focus')) state.focusMins = Math.max(1, parseInt(params.get('focus'), 10) || state.focusMins);
+        if (params.has('break')) state.breakMins = Math.max(1, parseInt(params.get('break'), 10) || state.breakMins);
         if (params.has('hours')) state.targetHours = Math.max(0, parseInt(params.get('hours'), 10) || 6);
         if (params.has('mins')) state.targetMinutes = Math.max(0, Math.min(59, parseInt(params.get('mins'), 10) || 0));
 
         if (params.has('tasks')) {
-          const items = (params.get('tasks') || '')
-            .split('||')
+          const rawTasks = params.get('tasks') || '';
+          const delimiter = rawTasks.includes('||') ? '||' : ',';
+          const items = rawTasks
+            .split(delimiter)
             .map((s) => s.trim())
             .filter(Boolean);
           if (items.length > 0) {
@@ -833,12 +810,12 @@ Full-Length Mock Test & Error Log</textarea>
       url.hash = '';
       const params = new URLSearchParams();
       params.set('live', '1');
-      if (state.hostName.trim()) params.set('name', state.hostName.trim());
+      if (state.hostName.trim()) params.set('channel', state.hostName.trim());
       if (state.platformTag.trim()) params.set('platform', state.platformTag.trim());
       if (state.sessionTitle.trim()) params.set('session', state.sessionTitle.trim());
       params.set('mode', state.timerMode);
 
-      if (state.timerMode === 'pomodoro') {
+      if (isPomodoroMode()) {
         params.set('focus', String(state.focusMins));
         params.set('break', String(state.breakMins));
       } else if (state.timerMode === 'countdown') {
@@ -856,238 +833,30 @@ Full-Length Mock Test & Error Log</textarea>
     }
 
     function updateGeneratedUrlField() {
-      const field = document.getElementById('generated-live-url');
-      if (field) {
-        field.value = buildLiveBroadcastUrl();
-      }
-    }
-
-    // ==================== AUDIO CHIME (WEB AUDIO API) ====================
-    function playBroadcastChime() {
-      try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const now = ctx.currentTime;
-
-        [523.25, 659.25, 783.99].forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.14);
-          gain.gain.setValueAtTime(0.001, now + idx * 0.14);
-          gain.gain.exponentialRampToValueAtTime(0.12, now + idx * 0.14 + 0.03);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.14 + 0.55);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(now + idx * 0.14);
-          osc.stop(now + idx * 0.14 + 0.6);
-        });
-      } catch (e) {
-        // Audio blocked until user gesture
-      }
-    }
-
-    // ==================== UI HELPERS & TOAST ====================
-    function showToast(msg) {
-      const banner = document.getElementById('toast-banner');
-      const text = document.getElementById('toast-message');
-      if (!banner || !text) return;
-      text.textContent = msg;
-      banner.classList.remove('hidden');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => {
-        banner.classList.add('hidden');
-      }, 3000);
-    }
-
-    function formatHMS(totalSeconds) {
-      const safe = Math.max(0, Math.floor(Number(totalSeconds) || 0));
-      const h = Math.floor(safe / 3600);
-      const m = Math.floor((safe % 3600) / 60);
-      const s = safe % 60;
-      return [h, m, s].map((v) => String(v).padStart(2, '0')).join(':');
-    }
-
-    function copyTextSafely(text) {
-      try {
-        const el = document.createElement('textarea');
-        el.value = text;
-        el.setAttribute('readonly', '');
-        el.style.position = 'fixed';
-        el.style.left = '-9999px';
-        document.body.appendChild(el);
-        el.select();
-        const ok = document.execCommand('copy');
-        document.body.removeChild(el);
-        return ok;
-      } catch (e) {
-        return false;
-      }
-    }
-
-    function copyLiveUrl() {
-      const url = buildLiveBroadcastUrl();
-      if (copyTextSafely(url)) {
-        showToast('Live Broadcast URL copied to clipboard.');
-      } else {
-        showToast('Select the link and copy manually.');
-      }
-    }
-
-    // ==================== SETUP FORM HANDLERS ====================
-    function syncFormInputs() {
-      document.getElementById('input-host-name').value = state.hostName;
-      document.getElementById('input-platform-tag').value = state.platformTag;
-      document.getElementById('input-session-title').value = state.sessionTitle;
-      document.getElementById('input-timer-mode').value = state.timerMode;
-      document.getElementById('input-focus-mins').value = state.focusMins;
-      document.getElementById('input-break-mins').value = state.breakMins;
-      document.getElementById('input-target-hours').value = state.targetHours;
-      document.getElementById('input-target-minutes').value = state.targetMinutes;
-      document.getElementById('input-agenda-tasks').value = state.tasks.map((t) => t.text).join('\n');
-      handleModeSelectionChange();
-      updateAgendaLineCounter();
-    }
-
+// ... existing code ... -->
     function handleModeSelectionChange() {
       const mode = document.getElementById('input-timer-mode').value;
       const pomoBox = document.getElementById('pomodoro-config-box');
       const countBox = document.getElementById('countdown-config-box');
 
-      pomoBox.classList.toggle('hidden', mode !== 'pomodoro');
+      if (mode === 'pomodoro25') {
+        document.getElementById('input-focus-mins').value = 25;
+        document.getElementById('input-break-mins').value = 5;
+      } else if (mode === 'pomodoro50') {
+        document.getElementById('input-focus-mins').value = 50;
+        document.getElementById('input-break-mins').value = 10;
+      }
+
+      pomoBox.classList.toggle('hidden', !isPomodoroMode(mode));
       countBox.classList.toggle('hidden', mode !== 'countdown');
     }
 
     function updateAgendaLineCounter() {
-      const raw = document.getElementById('input-agenda-tasks').value || '';
-      const count = raw.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).length;
-      document.getElementById('agenda-line-count').textContent = `${count} ${count === 1 ? 'task' : 'tasks'}`;
-    }
-
-    function handleLaunchSession(event) {
-      event.preventDefault();
-      state.hostName = document.getElementById('input-host-name').value.trim() || 'BRO_STUDIES';
-      state.platformTag = document.getElementById('input-platform-tag').value.trim() || 'YOUTUBE LIVE';
-      state.sessionTitle = document.getElementById('input-session-title').value.trim() || 'Study Marathon Session';
-      state.timerMode = document.getElementById('input-timer-mode').value;
-      state.focusMins = Math.max(1, parseInt(document.getElementById('input-focus-mins').value, 10) || 50);
-      state.breakMins = Math.max(1, parseInt(document.getElementById('input-break-mins').value, 10) || 10);
-      state.targetHours = Math.max(0, parseInt(document.getElementById('input-target-hours').value, 10) || 0);
-      state.targetMinutes = Math.max(0, Math.min(59, parseInt(document.getElementById('input-target-minutes').value, 10) || 0));
-
-      const rawLines = (document.getElementById('input-agenda-tasks').value || '')
-        .split(/\r?\n/)
-        .map((l) => l.trim())
-        .filter(Boolean);
-
-      state.tasks = rawLines.map((text, idx) => ({
-        id: Date.now() + idx,
-        text,
-        done: false,
-      }));
-
-      pauseTimer();
-      resetTimerValuesOnly();
-      saveStateToStorage();
-      updateGeneratedUrlField();
-
-      try {
-        window.history.replaceState({}, '', buildLiveBroadcastUrl());
-      } catch (e) {
-        // Ignore history restrictions
-      }
-
-      switchView('live');
-    }
-
-    // ==================== VIEW SWITCHING & ALPHA TRANSPARENCY ====================
-    function switchView(target) {
-      state.view = target;
-      const setupEl = document.getElementById('setup-view');
-      const liveEl = document.getElementById('live-view');
-      const navSetup = document.getElementById('nav-setup-btn');
-      const navLive = document.getElementById('nav-live-btn');
-      const htmlEl = document.documentElement;
-
-      if (target === 'live') {
-        setupEl.classList.add('hidden');
-        liveEl.classList.remove('hidden');
-        htmlEl.classList.add('live-alpha');
-        if (state.alphaGrid) htmlEl.classList.add('alpha-grid-preview');
-
-        navLive.classList.add('ring-2', 'ring-[#00FF66]/40');
-        navSetup.classList.remove('ring-2', 'ring-[#00FF66]/40');
-
-        renderBroadcastHud();
-        renderAgendaTasks();
-        renderMilestones();
-        resetIdleChromeTimer();
-      } else {
-        liveEl.classList.add('hidden');
-        setupEl.classList.remove('hidden');
-        htmlEl.classList.remove('live-alpha', 'alpha-grid-preview');
-        document.body.classList.remove('chrome-idle');
-        clearTimeout(idleChromeTimer);
-
-        navSetup.classList.add('ring-2', 'ring-[#00FF66]/40');
-        navLive.classList.remove('ring-2', 'ring-[#00FF66]/40');
-
-        syncFormInputs();
-        updateGeneratedUrlField();
-      }
-    }
-
-    function toggleAlphaGridPreview() {
-      state.alphaGrid = !state.alphaGrid;
-      const htmlEl = document.documentElement;
-      const btn = document.getElementById('btn-alpha-grid');
-      if (state.alphaGrid) {
-        htmlEl.classList.add('alpha-grid-preview');
-        btn.classList.add('border-[#00FF66]/50', 'text-[#00FF66]');
-        showToast('Alpha Grid preview enabled.');
-      } else {
-        htmlEl.classList.remove('alpha-grid-preview');
-        btn.classList.remove('border-[#00FF66]/50', 'text-[#00FF66]');
-        showToast('Pure transparent background active.');
-      }
-    }
-
-    function resetIdleChromeTimer() {
-      if (state.view !== 'live') return;
-      if (!state.chromeHiddenManual) {
-        document.body.classList.remove('chrome-idle');
-      }
-      clearTimeout(idleChromeTimer);
-      idleChromeTimer = setTimeout(() => {
-        if (state.view === 'live') {
-          document.body.classList.add('chrome-idle');
-        }
-      }, 3000);
-    }
-
-    function toggleManualChromeVisibility() {
-      if (state.view !== 'live') return;
-      state.chromeHiddenManual = !state.chromeHiddenManual;
-      if (state.chromeHiddenManual) {
-        document.body.classList.add('chrome-idle');
-        clearTimeout(idleChromeTimer);
-      } else {
-        document.body.classList.remove('chrome-idle');
-        resetIdleChromeTimer();
-      }
-    }
-
-    // ==================== TIMER ENGINE ====================
-    function getCountdownDurationSeconds() {
-      const total = state.targetHours * 3600 + state.targetMinutes * 60;
-      return total > 0 ? total : 3600;
-    }
-
+// ... existing code ... -->
     function resetTimerValuesOnly() {
       if (state.timerMode === 'stopwatch') {
         state.timerSeconds = 0;
-      } else if (state.timerMode === 'pomodoro') {
+      } else if (isPomodoroMode()) {
         state.pomodoroPhase = 'focus';
         state.timerSeconds = state.focusMins * 60;
       } else {
@@ -1110,13 +879,13 @@ Full-Length Mock Test & Error Log</textarea>
 
       state.intervalId = setInterval(() => {
         // Count total active focus time
-        if (state.timerMode !== 'pomodoro' || state.pomodoroPhase === 'focus') {
+        if (!isPomodoroMode() || state.pomodoroPhase === 'focus') {
           state.totalFocusSeconds += 1;
         }
 
         if (state.timerMode === 'stopwatch') {
           state.timerSeconds += 1;
-        } else if (state.timerMode === 'pomodoro') {
+        } else if (isPomodoroMode()) {
           if (state.timerSeconds > 1) {
             state.timerSeconds -= 1;
           } else {
@@ -1133,50 +902,9 @@ Full-Length Mock Test & Error Log</textarea>
             }
           }
         } else if (state.timerMode === 'countdown') {
-          if (state.timerSeconds > 1) {
-            state.timerSeconds -= 1;
-          } else {
-            state.timerSeconds = 0;
-            playBroadcastChime();
-            pauseTimer();
-            showToast('Countdown target reached.');
-          }
-        }
-
-        saveStateToStorage();
-        renderBroadcastHud();
-      }, 1000);
-    }
-
-    function pauseTimer() {
-      state.isRunning = false;
-      if (state.intervalId) {
-        clearInterval(state.intervalId);
-        state.intervalId = null;
-      }
-      saveStateToStorage();
-      renderBroadcastHud();
-    }
-
-    function handleResetRequest() {
-      document.getElementById('reset-confirm-modal').classList.remove('hidden');
-    }
-
-    function closeResetModal() {
-      document.getElementById('reset-confirm-modal').classList.add('hidden');
-    }
-
-    function confirmResetTimer() {
-      closeResetModal();
-      pauseTimer();
-      resetTimerValuesOnly();
-      saveStateToStorage();
-      renderBroadcastHud();
-      showToast('Timer reset.');
-    }
-
+// ... existing code ... -->
     function switchPomodoroPhaseManually() {
-      if (state.timerMode !== 'pomodoro') return;
+      if (!isPomodoroMode()) return;
       if (state.pomodoroPhase === 'focus') {
         state.pomodoroPhase = 'break';
         state.timerSeconds = state.breakMins * 60;
@@ -1203,53 +931,11 @@ Full-Length Mock Test & Error Log</textarea>
       saveStateToStorage();
       renderMilestones();
       renderBroadcastHud();
-      showToast(`Milestone #${state.milestones.length} logged at ${stamp}`);
+      showToast(`Session/Lap #${state.milestones.length} logged at ${stamp}`);
     }
 
     function clearMilestones() {
-      state.milestones = [];
-      saveStateToStorage();
-      renderMilestones();
-    }
-
-    function renderMilestones() {
-      const panel = document.getElementById('milestones-panel');
-      const list = document.getElementById('milestones-list');
-      if (!state.milestones.length) {
-        panel.classList.add('hidden');
-        return;
-      }
-      panel.classList.remove('hidden');
-      list.innerHTML = state.milestones
-        .map(
-          (m) => `
-          <li class="flex items-center justify-between px-3 py-1.5 rounded-lg bg-obsidian-950/90 border border-white/[0.06] text-slate-300">
-            <span class="text-[#FF5E00] font-bold">M-${String(m.index).padStart(2, '0')}</span>
-            <span class="text-white font-bold">${m.stamp}</span>
-            <span class="text-slate-500">FOCUS ${m.total}</span>
-          </li>`
-        )
-        .join('');
-    }
-
-    function renderBroadcastHud() {
-      // Identity & Title
-      document.getElementById('hud-host-name').textContent = state.hostName || 'BRO_STUDIES';
-      document.getElementById('hud-platform-tag').textContent = state.platformTag || 'YOUTUBE LIVE';
-      document.getElementById('hud-session-title').textContent = state.sessionTitle || 'Study Marathon Session';
-
-      // Hero Digits
-      document.getElementById('hud-hero-timer').textContent = formatHMS(state.timerSeconds);
-
-      // Mode Labels & Progress Bar
-      const modeLabel = document.getElementById('hud-timer-mode-label');
-      const barTag = document.getElementById('live-bar-mode-tag');
-      const cycleBadge = document.getElementById('hud-cycle-badge');
-      const skipBtn = document.getElementById('btn-pomodoro-skip');
-      const progressWrap = document.getElementById('hud-timer-progress-wrap');
-      const progressBar = document.getElementById('hud-timer-progress-bar');
-      const activeBar = document.getElementById('hud-timer-active-bar');
-
+// ... existing code ... -->
       if (state.timerMode === 'stopwatch') {
         modeLabel.textContent = 'MARATHON STOPWATCH';
         barTag.textContent = 'STOPWATCH';
@@ -1257,7 +943,7 @@ Full-Length Mock Test & Error Log</textarea>
         skipBtn.classList.add('hidden');
         progressWrap.classList.add('hidden');
         activeBar.className = 'h-1.5 w-6 rounded-full bg-[#00FF66]';
-      } else if (state.timerMode === 'pomodoro') {
+      } else if (isPomodoroMode()) {
         const isFocus = state.pomodoroPhase === 'focus';
         modeLabel.textContent = isFocus
           ? `POMODORO FOCUS (${state.focusMins}M)`
@@ -1275,7 +961,7 @@ Full-Length Mock Test & Error Log</textarea>
           ? 'h-1.5 w-6 rounded-full bg-[#00FF66]'
           : 'h-1.5 w-6 rounded-full bg-[#FF5E00]';
       } else {
-        modeLabel.textContent = `COUNTDOWN TARGET (${state.targetHours}H ${state.targetMinutes}M)`;
+        modeLabel.textContent = `MARATHON COUNTDOWN (${state.targetHours}H ${state.targetMinutes}M)`;
         barTag.textContent = 'COUNTDOWN';
         cycleBadge.classList.add('hidden');
         skipBtn.classList.add('hidden');
@@ -1293,7 +979,7 @@ Full-Length Mock Test & Error Log</textarea>
       const toggleBtn = document.getElementById('btn-timer-toggle');
 
       if (state.isRunning) {
-        if (state.timerMode === 'pomodoro' && state.pomodoroPhase === 'break') {
+        if (isPomodoroMode() && state.pomodoroPhase === 'break') {
           dot.className = 'h-2 w-2 rounded-full bg-[#FF5E00] animate-pulse';
           statusText.textContent = 'BREAK';
           statusText.className = 'text-[11px] font-mono font-bold tracking-widest uppercase text-[#FF5E00]';
