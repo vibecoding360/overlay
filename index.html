@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Study With Me Overlay — Marathon Studio</title>
-  <!-- Load Inter font & Tailwind CSS -->
+  <title>BRO_STUDIES — Marathon Studio</title>
+  <!-- Load Space Grotesk, Inter, and JetBrains Mono for broadcast-grade typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -16,20 +16,20 @@
         extend: {
           fontFamily: {
             sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Space Grotesk', 'Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
           },
           colors: {
-            brand: {
-              400: '#fb923c',
-              500: '#f97316',
-              600: '#ea580c',
-              700: '#c2410c',
+            neon: {
+              green: '#00FF66',
+              orange: '#FF5E00',
             },
-            surface: {
-              950: '#070b12',
-              900: '#0b111c',
-              850: '#101827',
-              800: '#152033',
-              700: '#1e2d45',
+            obsidian: {
+              950: '#07090d',
+              900: '#0a0e14',
+              850: '#0f141d',
+              800: '#151c28',
+              700: '#1f293a',
             }
           }
         }
@@ -37,479 +37,626 @@
     };
   </script>
   <style>
-    /* Custom subtle scrollbars and tabular numeric styling */
+    /* Razor-sharp tabular figures for zero jitter on live streams */
     .tabular-nums {
       font-variant-numeric: tabular-nums;
     }
+
+    /* Hero Broadcast Timer Scaling */
+    .hero-timer-digits {
+      font-size: clamp(4.25rem, 8.5vw, 7.85rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+
+    /* Frosted Obsidian Studio Glass */
+    .studio-panel {
+      background: rgba(10, 14, 20, 0.86);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.75);
+    }
+
+    /* True Alpha Transparency in Live Broadcast Mode */
+    html.live-alpha,
+    html.live-alpha body,
+    html.live-alpha #app-root {
+      background: transparent !important;
+      background-color: transparent !important;
+    }
+
+    /* Subtle Alpha Transparency Checkerboard Preview */
+    html.live-alpha.alpha-grid-preview body {
+      background-color: #090c10 !important;
+      background-image:
+        linear-gradient(45deg, #11161f 25%, transparent 25%),
+        linear-gradient(-45deg, #11161f 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #11161f 75%),
+        linear-gradient(-45deg, transparent 75%, #11161f 75%) !important;
+      background-size: 28px 28px !important;
+      background-position: 0 0, 0 14px, 14px -14px, -14px 0 !important;
+    }
+
+    /* Auto-hiding Chrome Transitions */
+    .chrome-autohide {
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    body.chrome-idle .chrome-autohide {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+    }
+    body.chrome-idle .chrome-autohide:hover,
+    body.chrome-idle .chrome-autohide:focus-within {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* Custom Precision Scrollbars */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.5);
+      background: rgba(15, 20, 29, 0.4);
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(100, 116, 139, 0.45);
+      background: rgba(148, 163, 184, 0.25);
       border-radius: 9999px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(249, 115, 22, 0.65);
-    }
-    /* Transparent mode helper for OBS browser sources */
-    body.obs-transparent,
-    body.obs-transparent #app-root {
-      background: transparent !important;
+      background: rgba(0, 255, 102, 0.5);
     }
   </style>
 </head>
-<body class="bg-surface-950 text-slate-100 font-sans antialiased min-h-screen selection:bg-brand-500/30 selection:text-brand-200">
+<body class="bg-obsidian-950 text-slate-100 font-sans antialiased min-h-screen selection:bg-[#00FF66]/25 selection:text-[#00FF66]">
   <div id="app-root" class="min-h-screen w-full flex flex-col">
-    <!-- Top Utility Bar (Hidden when in OBS transparent overlay mode unless hovered/toggled) -->
-    <header id="top-bar" class="w-full border-b border-slate-800/80 bg-surface-900/90 backdrop-blur-md sticky top-0 z-30">
+
+    <!-- ==================== GLOBAL NAVIGATION HEADER ==================== -->
+    <header id="top-bar" class="chrome-autohide w-full border-b border-white/[0.08] bg-obsidian-900/90 backdrop-blur-xl sticky top-0 z-30">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-        <div class="flex items-center gap-2.5">
-          <span class="inline-flex h-2.5 w-2.5 rounded-full bg-brand-500 animate-pulse"></span>
-          <span class="text-sm font-semibold tracking-wide text-slate-200">Marathon Overlay Studio</span>
-          <span class="hidden sm:inline-block text-xs px-2 py-0.5 rounded-full bg-brand-500/15 text-brand-400 border border-brand-500/30 font-medium">
-            OBS Ready
+        <!-- Brand Identity -->
+        <div class="flex items-center gap-3">
+          <div class="h-3 w-1 rounded-full bg-gradient-to-b from-[#00FF66] to-[#FF5E00]"></div>
+          <span class="font-display text-base sm:text-lg font-bold tracking-tight text-white">
+            BRO_STUDIES
+          </span>
+          <span class="text-[10px] sm:text-xs font-mono font-bold tracking-widest uppercase px-2.5 py-0.5 rounded-md bg-[#00FF66]/10 text-[#00FF66] border border-[#00FF66]/30">
+            MARATHON STUDIO
           </span>
         </div>
 
-        <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Primary Navigation Tabs -->
+        <nav class="flex items-center gap-2">
           <button
-            id="nav-config-btn"
+            id="nav-setup-btn"
             type="button"
-            onclick="switchView('config')"
-            class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-slate-700/80 bg-surface-800 hover:bg-surface-700 text-slate-200 cursor-pointer"
+            onclick="switchView('setup')"
+            class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-white/10 bg-obsidian-850 hover:bg-obsidian-800 text-slate-200 cursor-pointer"
           >
-            Configurator
+            Session Setup
           </button>
           <button
-            id="nav-overlay-btn"
+            id="nav-live-btn"
             type="button"
-            onclick="switchView('overlay')"
-            class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-brand-500/40 bg-brand-500/15 hover:bg-brand-500/25 text-brand-300 cursor-pointer"
+            onclick="switchView('live')"
+            class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-[#00FF66]/40 bg-[#00FF66]/10 hover:bg-[#00FF66]/20 text-[#00FF66] cursor-pointer"
           >
-            Live Overlay View
+            Live Broadcast
           </button>
           <button
-            id="open-code-modal-btn"
+            id="nav-export-btn"
             type="button"
-            onclick="openCodeModal()"
-            class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-slate-700/80 bg-surface-850 hover:border-brand-500/50 text-slate-200 flex items-center gap-1.5 cursor-pointer"
+            onclick="openExportModal()"
+            class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-white/10 bg-obsidian-850 hover:border-[#FF5E00]/50 text-slate-200 flex items-center gap-1.5 cursor-pointer"
           >
-            <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="w-4 h-4 text-[#FF5E00]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
             </svg>
-            <span>Standalone HTML</span>
+            <span>Export Code</span>
           </button>
-        </div>
+        </nav>
       </div>
     </header>
 
-    <!-- Toast / Status Banner -->
+    <!-- Non-Intrusive Broadcast Toast Notification -->
     <div id="toast-banner" class="fixed bottom-5 right-5 z-50 hidden max-w-sm w-full sm:w-auto">
-      <div class="rounded-2xl bg-surface-800 border border-brand-500/50 shadow-2xl shadow-black/60 px-4 py-3 flex items-center gap-3">
-        <span class="h-2.5 w-2.5 rounded-full bg-brand-500 shrink-0"></span>
+      <div class="rounded-2xl bg-obsidian-900/95 border border-[#00FF66]/40 shadow-2xl shadow-black/80 px-4 py-3 flex items-center gap-3 backdrop-blur-xl">
+        <span class="h-2 w-2 rounded-full bg-[#00FF66] shrink-0"></span>
         <p id="toast-message" class="text-xs sm:text-sm font-medium text-slate-100"></p>
       </div>
     </div>
 
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="flex-1 w-full">
-      <!-- ==================== 1. CONFIGURATOR VIEW ==================== -->
-      <section id="config-view" class="w-full py-8 sm:py-10 px-4">
-        <div class="max-w-2xl mx-auto rounded-3xl bg-surface-900/95 border border-slate-800/90 shadow-2xl shadow-black/50 p-6 sm:p-9">
-          <!-- Header matching screenshot aesthetic -->
-          <div class="text-center mb-7">
-            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              Study With Me <span class="text-brand-500">Overlay</span>
+    <!-- MAIN WORKSPACE -->
+    <main class="flex-1 w-full flex flex-col">
+
+      <!-- ==================== 1. SESSION SETUP VIEW ==================== -->
+      <section id="setup-view" class="w-full py-8 sm:py-12 px-4">
+        <div class="max-w-2xl mx-auto studio-panel rounded-3xl p-6 sm:p-9 relative overflow-hidden">
+          <!-- Top Precision Dual-Accent Bar -->
+          <div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#00FF66] via-[#00FF66]/50 to-[#FF5E00]"></div>
+
+          <!-- Header -->
+          <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] mb-3">
+              <span class="h-1.5 w-1.5 rounded-full bg-[#00FF66]"></span>
+              <span class="text-[11px] font-mono font-bold tracking-widest uppercase text-slate-300">
+                BROADCAST TELEMETRY CONFIGURATOR
+              </span>
+            </div>
+            <h1 class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              BRO_STUDIES <span class="text-[#00FF66]">Marathon Studio</span>
             </h1>
             <p class="mt-2 text-xs sm:text-sm text-slate-400">
-              Apna details bharo — personal OBS overlay link milega
+              Configure your study session — generate your personalized live stream link
             </p>
           </div>
 
-          <form id="overlay-form" onsubmit="handleGenerateOverlay(event)" class="space-y-5">
-            <!-- TUMHARA NAAM / CHANNEL NAME -->
+          <form id="session-setup-form" onsubmit="handleLaunchSession(event)" class="space-y-5">
+            <!-- Host / Channel Name -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="input-host-name" class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  HOST / CHANNEL NAME
+                </label>
+                <input
+                  id="input-host-name"
+                  type="text"
+                  placeholder="e.g. BRO_STUDIES"
+                  class="w-full rounded-xl bg-obsidian-850 border border-white/10 focus:border-[#00FF66] focus:ring-2 focus:ring-[#00FF66]/20 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition"
+                />
+              </div>
+
+              <!-- Platform / Stream Tag -->
+              <div>
+                <label for="input-platform-tag" class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  PLATFORM / STREAM TAG
+                </label>
+                <input
+                  id="input-platform-tag"
+                  type="text"
+                  placeholder="e.g. YOUTUBE LIVE"
+                  class="w-full rounded-xl bg-obsidian-850 border border-white/10 focus:border-[#FF5E00] focus:ring-2 focus:ring-[#FF5E00]/20 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition"
+                />
+              </div>
+            </div>
+
+            <!-- Session Title -->
             <div>
-              <label for="channel-name" class="block text-xs font-bold uppercase tracking-wider text-brand-400 mb-2">
-                TUMHARA NAAM / CHANNEL NAME
+              <label for="input-session-title" class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300 mb-2">
+                SESSION TITLE
               </label>
               <input
-                id="channel-name"
+                id="input-session-title"
                 type="text"
-                placeholder="e.g. Rahul Kumar"
-                class="w-full rounded-xl bg-surface-850/90 border border-slate-700/80 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/25 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition"
+                placeholder="e.g. 12-Hour Deep Focus Study Marathon"
+                class="w-full rounded-xl bg-obsidian-850 border border-white/10 focus:border-[#00FF66] focus:ring-2 focus:ring-[#00FF66]/20 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition"
               />
             </div>
 
-            <!-- SESSION KA NAAM -->
+            <!-- Timer Mode Selector -->
             <div>
-              <label for="session-name" class="block text-xs font-bold uppercase tracking-wider text-brand-400 mb-2">
-                SESSION KA NAAM
-              </label>
-              <input
-                id="session-name"
-                type="text"
-                placeholder="e.g. SSC CGL Morning Study"
-                class="w-full rounded-xl bg-surface-850/90 border border-slate-700/80 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/25 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition"
-              />
-            </div>
-
-            <!-- BRAND / PLATFORM NAME -->
-            <div>
-              <label for="brand-name" class="block text-xs font-bold uppercase tracking-wider text-brand-400 mb-2">
-                BRAND / PLATFORM NAME
-              </label>
-              <input
-                id="brand-name"
-                type="text"
-                value="Sarvodaya Adhyeta"
-                placeholder="e.g. Sarvodaya Adhyeta"
-                class="w-full rounded-xl bg-surface-850/90 border border-slate-700/80 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/25 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition"
-              />
-            </div>
-
-            <!-- TIMER MODE -->
-            <div>
-              <label for="timer-mode" class="block text-xs font-bold uppercase tracking-wider text-brand-400 mb-2">
+              <label for="input-timer-mode" class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300 mb-2">
                 TIMER MODE
               </label>
               <select
-                id="timer-mode"
-                onchange="toggleMarathonTargetInputs()"
-                class="w-full rounded-xl bg-surface-850/90 border border-slate-700/80 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/25 px-4 py-3 text-sm text-white outline-none transition cursor-pointer"
+                id="input-timer-mode"
+                onchange="handleModeSelectionChange()"
+                class="w-full rounded-xl bg-obsidian-850 border border-white/10 focus:border-[#00FF66] focus:ring-2 focus:ring-[#00FF66]/20 px-4 py-3 text-sm text-white outline-none transition cursor-pointer"
               >
-                <option value="stopwatch" selected>Stopwatch (open-ended)</option>
-                <option value="pomodoro">Pomodoro (25/5 min)</option>
-                <option value="countdown">Marathon Countdown</option>
+                <option value="stopwatch">Marathon Stopwatch (Open-Ended)</option>
+                <option value="pomodoro">Pomodoro Cycles (50m Focus / 10m Break)</option>
+                <option value="countdown">Countdown Target (e.g. 6h / 10h / 12h)</option>
               </select>
 
-              <!-- Marathon Countdown Target Controls (Shown when Marathon Countdown is selected) -->
-              <div id="countdown-target-box" class="hidden mt-3 p-3.5 rounded-2xl bg-surface-800/80 border border-slate-700/70">
-                <p class="text-xs font-semibold text-slate-300 mb-2.5">Marathon Target Duration</p>
+              <!-- Pomodoro Custom Cycle Inputs -->
+              <div id="pomodoro-config-box" class="hidden mt-3 p-4 rounded-2xl bg-obsidian-850/90 border border-white/[0.08]">
+                <p class="text-[11px] font-mono font-bold uppercase tracking-wider text-[#00FF66] mb-3">
+                  POMODORO CYCLE CONFIGURATION
+                </p>
                 <div class="grid grid-cols-2 gap-3">
                   <div>
-                    <label for="target-hours" class="block text-[11px] text-slate-400 mb-1">Target Hours</label>
+                    <label for="input-focus-mins" class="block text-xs text-slate-400 mb-1">Focus Duration (min)</label>
                     <input
-                      id="target-hours"
+                      id="input-focus-mins"
+                      type="number"
+                      min="1"
+                      max="180"
+                      value="50"
+                      class="w-full rounded-xl bg-obsidian-950 border border-white/10 focus:border-[#00FF66] px-3.5 py-2 text-sm text-white outline-none tabular-nums"
+                    />
+                  </div>
+                  <div>
+                    <label for="input-break-mins" class="block text-xs text-slate-400 mb-1">Break Duration (min)</label>
+                    <input
+                      id="input-break-mins"
+                      type="number"
+                      min="1"
+                      max="60"
+                      value="10"
+                      class="w-full rounded-xl bg-obsidian-950 border border-white/10 focus:border-[#FF5E00] px-3.5 py-2 text-sm text-white outline-none tabular-nums"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Countdown Target Inputs -->
+              <div id="countdown-config-box" class="hidden mt-3 p-4 rounded-2xl bg-obsidian-850/90 border border-white/[0.08]">
+                <p class="text-[11px] font-mono font-bold uppercase tracking-wider text-[#FF5E00] mb-3">
+                  COUNTDOWN TARGET DURATION
+                </p>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label for="input-target-hours" class="block text-xs text-slate-400 mb-1">Target Hours</label>
+                    <input
+                      id="input-target-hours"
                       type="number"
                       min="0"
                       max="99"
                       value="6"
-                      class="w-full rounded-xl bg-surface-900 border border-slate-700 focus:border-brand-500 px-3 py-2 text-sm text-white outline-none tabular-nums"
+                      class="w-full rounded-xl bg-obsidian-950 border border-white/10 focus:border-[#FF5E00] px-3.5 py-2 text-sm text-white outline-none tabular-nums"
                     />
                   </div>
                   <div>
-                    <label for="target-minutes" class="block text-[11px] text-slate-400 mb-1">Target Minutes</label>
+                    <label for="input-target-minutes" class="block text-xs text-slate-400 mb-1">Target Minutes</label>
                     <input
-                      id="target-minutes"
+                      id="input-target-minutes"
                       type="number"
                       min="0"
                       max="59"
                       value="0"
-                      class="w-full rounded-xl bg-surface-900 border border-slate-700 focus:border-brand-500 px-3 py-2 text-sm text-white outline-none tabular-nums"
+                      class="w-full rounded-xl bg-obsidian-950 border border-white/10 focus:border-[#FF5E00] px-3.5 py-2 text-sm text-white outline-none tabular-nums"
                     />
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- AAJ KE TASKS (EK LINE = EK TASK) -->
+            <!-- Session Agenda Tasks -->
             <div>
               <div class="flex items-center justify-between mb-2">
-                <label for="tasks-input" class="block text-xs font-bold uppercase tracking-wider text-brand-400">
-                  AAJ KE TASKS (EK LINE = EK TASK)
+                <label for="input-agenda-tasks" class="block text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+                  SESSION AGENDA (ONE TASK PER LINE)
                 </label>
-                <span id="task-line-counter" class="text-xs text-slate-400 tabular-nums">4 / 6 recommended</span>
+                <span id="agenda-line-count" class="text-xs font-mono text-slate-400 tabular-nums">4 tasks</span>
               </div>
               <textarea
-                id="tasks-input"
+                id="input-agenda-tasks"
                 rows="4"
-                oninput="updateTaskLineCounter()"
-                placeholder="Ek line mein ek task likho..."
-                class="w-full rounded-xl bg-surface-850/90 border border-slate-700/80 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/25 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition leading-relaxed resize-y"
-              >Reasoning — 30 questions
-English Reading Comprehension
-GK Current Affairs revision
-Math — Percentage chapter</textarea>
-              <p class="mt-2 text-xs text-slate-400">
-                Max 6 tasks recommend kiye hain overlay mein fit rehne ke liye
-              </p>
-            </div>
-
-            <!-- OBS Transparent Background Toggle -->
-            <div class="flex items-center justify-between p-3.5 rounded-2xl bg-surface-850/70 border border-slate-800">
-              <div>
-                <p class="text-xs sm:text-sm font-semibold text-slate-200">OBS Transparent Background (?transparent=1)</p>
-                <p class="text-[11px] sm:text-xs text-slate-400">Livestream / OBS Browser Source ke liye transparent backdrop</p>
-              </div>
-              <label class="inline-flex items-center cursor-pointer">
-                <input id="obs-transparent-toggle" type="checkbox" class="sr-only peer" />
-                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-500 relative"></div>
-              </label>
+                oninput="updateAgendaLineCounter()"
+                placeholder="Enter one study milestone per line..."
+                class="w-full rounded-xl bg-obsidian-850 border border-white/10 focus:border-[#00FF66] focus:ring-2 focus:ring-[#00FF66]/20 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition leading-relaxed resize-y"
+              >Quantitative Aptitude — 50 Practice Sets
+Editorial & Reading Comprehension Analysis
+General Awareness & Static Revision
+Full-Length Mock Test & Error Log</textarea>
             </div>
 
             <!-- Primary CTA Button -->
             <button
               type="submit"
-              class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-400 hover:to-brand-500 active:scale-[0.99] text-white font-bold text-sm sm:text-base shadow-lg shadow-brand-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#00FF66] to-[#00d957] hover:brightness-105 active:scale-[0.99] text-obsidian-950 font-display font-bold text-sm sm:text-base tracking-wide shadow-lg shadow-[#00FF66]/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>🎬</span>
-              <span>Mera Overlay Link Banao</span>
+              <span>Launch Live Broadcast</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
             </button>
           </form>
 
-          <!-- Generated Link & Quick Actions Box -->
-          <div id="generated-link-panel" class="hidden mt-6 pt-6 border-t border-slate-800 space-y-3.5">
+          <!-- Generated Direct Broadcast URL Panel -->
+          <div id="share-link-panel" class="mt-6 pt-6 border-t border-white/[0.08] space-y-3">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-brand-400">
-                Tumhara OBS / Shareable Overlay URL
+              <span class="text-[11px] font-mono font-bold uppercase tracking-wider text-[#00FF66]">
+                DIRECT LIVE BROADCAST URL (ALPHA TRANSPARENT)
               </span>
-              <span class="text-[11px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                Ready for OBS Browser Source
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-[#FF5E00]/15 text-[#FF5E00] border border-[#FF5E00]/30">
+                1920 × 1080
               </span>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-2">
               <input
-                id="generated-url-input"
+                id="generated-live-url"
                 type="text"
                 readonly
-                class="flex-1 rounded-xl bg-surface-950 border border-slate-700/90 px-3.5 py-2.5 text-xs text-slate-200 font-mono outline-none select-all"
+                class="flex-1 rounded-xl bg-obsidian-950 border border-white/10 px-3.5 py-2.5 text-xs text-slate-300 font-mono outline-none select-all"
               />
               <button
                 type="button"
-                onclick="copyGeneratedUrl()"
-                class="px-4 py-2.5 rounded-xl bg-surface-800 hover:bg-surface-700 border border-slate-700 text-xs font-semibold text-white transition cursor-pointer shrink-0"
+                onclick="copyLiveUrl()"
+                class="px-4 py-2.5 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 border border-white/10 text-xs font-semibold text-white transition cursor-pointer shrink-0"
               >
-                Copy Link
-              </button>
-              <button
-                type="button"
-                onclick="launchLiveOverlayFromGenerated()"
-                class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-xs font-semibold text-white transition cursor-pointer shrink-0"
-              >
-                Open Live Overlay
+                Copy Live Link
               </button>
             </div>
-            <p class="text-[11px] text-slate-400">
-              OBS Tip: <span class="text-slate-200 font-medium">Sources → + → Browser</span> add karo, URL paste karo, aur Width <span class="text-slate-200 font-medium">1920</span> x Height <span class="text-slate-200 font-medium">1080</span> rakho.
-            </p>
           </div>
         </div>
       </section>
 
-      <!-- ==================== 2. LIVE MARATHON OVERLAY VIEW ==================== -->
-      <section id="overlay-view" class="hidden w-full min-h-[calc(100vh-57px)] p-4 sm:p-6 lg:p-8 flex flex-col justify-between">
-        <!-- Top Overlay Control Strip (Can be toggled off for pure stream capture) -->
-        <div id="overlay-controls-bar" class="max-w-5xl w-full mx-auto mb-4 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-surface-900/85 border border-slate-800/80 px-3.5 py-2.5 backdrop-blur-md">
-          <div class="flex items-center gap-2 text-xs text-slate-300">
-            <span class="inline-block h-2 w-2 rounded-full bg-brand-500"></span>
-            <span class="font-semibold">Live Marathon Overlay</span>
-            <span id="overlay-mode-badge" class="px-2 py-0.5 rounded-md bg-surface-800 text-brand-400 border border-brand-500/25 font-medium">
-              Stopwatch
+      <!-- ==================== 2. LIVE BROADCAST VIEW ==================== -->
+      <section id="live-view" class="hidden w-full flex-1 p-4 sm:p-6 lg:p-10 flex flex-col justify-between">
+        <!-- Auto-Hiding Top Floating Broadcast Control Bar -->
+        <div id="live-control-bar" class="chrome-autohide max-w-6xl w-full mx-auto mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl studio-panel px-4 py-2.5">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-block h-2 w-2 rounded-full bg-[#00FF66] animate-pulse"></span>
+            <span class="font-display text-xs sm:text-sm font-bold tracking-wider text-white">
+              BRO_STUDIES LIVE
+            </span>
+            <span id="live-bar-mode-tag" class="text-[11px] font-mono font-semibold px-2.5 py-0.5 rounded-md bg-white/[0.05] text-[#FF5E00] border border-[#FF5E00]/30">
+              STOPWATCH
             </span>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
             <button
+              id="btn-alpha-grid"
               type="button"
-              onclick="toggleOverlayBackdrop()"
-              class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-surface-800 hover:bg-surface-700 border border-slate-700 text-slate-200 transition cursor-pointer"
+              onclick="toggleAlphaGridPreview()"
+              class="px-3 py-1.5 rounded-lg text-xs font-medium bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-200 transition cursor-pointer"
             >
-              Toggle Transparent BG
+              Alpha Grid
             </button>
             <button
               type="button"
-              onclick="copyCurrentOverlayUrl()"
-              class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-surface-800 hover:bg-surface-700 border border-slate-700 text-slate-200 transition cursor-pointer"
+              onclick="copyLiveUrl()"
+              class="px-3 py-1.5 rounded-lg text-xs font-medium bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-200 transition cursor-pointer"
             >
-              Copy Overlay URL
+              Copy Live Link
             </button>
             <button
               type="button"
-              onclick="switchView('config')"
-              class="px-2.5 py-1.5 rounded-lg text-xs font-medium bg-brand-500/15 hover:bg-brand-500/25 border border-brand-500/40 text-brand-300 transition cursor-pointer"
+              onclick="switchView('setup')"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#FF5E00]/15 hover:bg-[#FF5E00]/25 border border-[#FF5E00]/40 text-[#FF5E00] transition cursor-pointer"
             >
-              Edit Details
+              Edit Session
             </button>
           </div>
         </div>
 
-        <!-- Main Overlay Widget Container (Crisp, non-cluttered for Livestream / OBS) -->
-        <div class="max-w-5xl w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          <!-- Left / Primary Card: Creator, Session, Brand & Timer -->
-          <div class="lg:col-span-7 rounded-3xl bg-surface-900/95 border border-slate-800/90 shadow-2xl shadow-black/60 p-5 sm:p-7 backdrop-blur-md">
-            <!-- Brand & Session Status Header -->
-            <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/15 border border-brand-500/35">
-                <span class="h-2 w-2 rounded-full bg-brand-500"></span>
-                <span id="live-brand-badge" class="text-xs font-bold tracking-wide text-brand-400 uppercase">
-                  Sarvodaya Adhyeta
-                </span>
+        <!-- MAIN TELEMETRY BROADCAST HUD -->
+        <div class="max-w-6xl w-full mx-auto my-auto grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+          <!-- LEFT PANEL (7 Cols): Primary Telemetry & Hero Timer -->
+          <div class="lg:col-span-7 studio-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between relative overflow-hidden">
+            <!-- Precision Top Neon Green to Electric Orange Accent Line -->
+            <div class="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#00FF66] via-[#00FF66]/70 to-[#FF5E00]"></div>
+
+            <div>
+              <!-- Top Telemetry Status Strip -->
+              <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div class="flex items-center gap-2.5">
+                  <span class="font-display text-xs sm:text-sm font-bold tracking-wider uppercase text-white">
+                    <span id="hud-host-name">BRO_STUDIES</span>
+                  </span>
+                  <span class="text-slate-600">•</span>
+                  <span id="hud-platform-tag" class="text-[11px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 rounded bg-[#FF5E00]/15 text-[#FF5E00] border border-[#FF5E00]/30">
+                    YOUTUBE LIVE
+                  </span>
+                </div>
+
+                <!-- Live Status Pill (ON AIR / PAUSED / BREAK) -->
+                <div class="flex items-center gap-2">
+                  <span id="hud-cycle-badge" class="hidden text-[11px] font-mono font-bold tracking-widest uppercase px-2.5 py-1 rounded-lg bg-white/[0.05] border border-white/10 text-slate-200">
+                    CYCLE 01
+                  </span>
+                  <div id="hud-status-pill" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-obsidian-950/90 border border-white/10">
+                    <span id="hud-status-dot" class="h-2 w-2 rounded-full bg-slate-500"></span>
+                    <span id="hud-status-text" class="text-[11px] font-mono font-bold tracking-widest uppercase text-slate-300">
+                      STANDBY
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div class="flex items-center gap-2 text-xs font-medium text-slate-400">
-                <span id="live-status-pill" class="px-2.5 py-1 rounded-full bg-surface-800 border border-slate-700/80 text-slate-300">
-                  Ready
-                </span>
-                <span id="pomodoro-phase-badge" class="hidden px-2.5 py-1 rounded-full bg-brand-500/20 border border-brand-500/40 text-brand-300 font-semibold">
-                  Focus (25m)
-                </span>
-              </div>
-            </div>
-
-            <!-- Creator & Session Title -->
-            <div class="mb-5">
-              <p id="live-creator-name" class="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-400">
-                Rahul Kumar • Marathon Stream
-              </p>
-              <h2 id="live-session-name" class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white mt-0.5 leading-tight">
-                SSC CGL Morning Study
+              <!-- Session Title -->
+              <h2 id="hud-session-title" class="font-display text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white mb-6 leading-snug">
+                12-Hour Deep Focus Study Marathon
               </h2>
+
+              <!-- Massive Razor-Sharp Hero Timer Box -->
+              <div class="rounded-2xl bg-obsidian-950/90 border border-white/[0.08] px-4 py-6 sm:py-8 mb-6 text-center relative overflow-hidden">
+                <div class="flex items-center justify-center gap-2 mb-2">
+                  <span id="hud-timer-active-bar" class="h-1.5 w-6 rounded-full bg-[#00FF66]"></span>
+                  <p id="hud-timer-mode-label" class="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-slate-400">
+                    MARATHON STOPWATCH
+                  </p>
+                </div>
+
+                <div
+                  id="hud-hero-timer"
+                  class="hero-timer-digits font-mono font-extrabold text-[#F8FAFC] tabular-nums select-none tracking-tight my-1"
+                >
+                  00:00:00
+                </div>
+
+                <!-- Countdown / Pomodoro Sub-Progress Track -->
+                <div id="hud-timer-progress-wrap" class="hidden max-w-md mx-auto mt-4">
+                  <div class="w-full h-1.5 rounded-full bg-obsidian-800 overflow-hidden">
+                    <div id="hud-timer-progress-bar" class="h-full bg-gradient-to-r from-[#00FF66] to-[#FF5E00] transition-all duration-500 w-0"></div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <!-- Prominent Tabular Timer Display -->
-            <div class="rounded-2xl bg-surface-950/90 border border-slate-800/90 p-5 sm:p-6 mb-5 text-center relative overflow-hidden">
-              <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-600 via-brand-400 to-brand-600 opacity-80"></div>
-              <p id="timer-sublabel" class="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">
-                STOPWATCH (OPEN-ENDED)
-              </p>
-              <div id="live-timer-display" class="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white tabular-nums select-none">
-                00:00:00
+            <!-- Bottom Section: 3 Clean Broadcast Telemetry Metrics + Controls -->
+            <div class="space-y-4">
+              <!-- Telemetry Strip -->
+              <div class="grid grid-cols-3 gap-2.5 sm:gap-3">
+                <div class="rounded-xl bg-obsidian-950/80 border border-white/[0.07] px-3 py-2.5">
+                  <p class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">TOTAL FOCUS</p>
+                  <p id="metric-total-focus" class="font-mono text-sm sm:text-base font-bold text-[#00FF66] tabular-nums mt-0.5">
+                    00:00:00
+                  </p>
+                </div>
+                <div class="rounded-xl bg-obsidian-950/80 border border-white/[0.07] px-3 py-2.5">
+                  <p class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">SESSIONS</p>
+                  <p id="metric-sessions-count" class="font-mono text-sm sm:text-base font-bold text-white tabular-nums mt-0.5">
+                    01
+                  </p>
+                </div>
+                <div class="rounded-xl bg-obsidian-950/80 border border-white/[0.07] px-3 py-2.5">
+                  <p class="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">COMPLETION</p>
+                  <p id="metric-completion-pct" class="font-mono text-sm sm:text-base font-bold text-[#FF5E00] tabular-nums mt-0.5">
+                    0%
+                  </p>
+                </div>
               </div>
-              <div class="mt-3 flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400 tabular-nums">
-                <span>Marathon Total Elapsed: <strong id="total-marathon-elapsed" class="text-brand-400 font-semibold">00:00:00</strong></span>
-                <span id="laps-count-indicator" class="hidden">Laps: <strong id="laps-count-val" class="text-slate-200 font-semibold">0</strong></span>
-              </div>
-            </div>
 
-            <!-- Primary Timer Controls -->
-            <div class="flex flex-wrap items-center justify-center gap-2.5 sm:gap-3">
-              <button
-                id="btn-start-pause"
-                type="button"
-                onclick="toggleTimer()"
-                class="px-6 py-3 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-400 hover:to-brand-500 text-white font-bold text-sm shadow-lg shadow-brand-600/25 transition cursor-pointer min-w-[120px]"
-              >
-                Start
-              </button>
-              <button
-                id="btn-reset"
-                type="button"
-                onclick="resetTimer()"
-                class="px-4 py-3 rounded-xl bg-surface-800 hover:bg-surface-700 border border-slate-700 text-slate-200 font-semibold text-sm transition cursor-pointer"
-              >
-                Reset
-              </button>
-              <button
-                id="btn-lap"
-                type="button"
-                onclick="recordLap()"
-                class="px-4 py-3 rounded-xl bg-surface-800 hover:bg-surface-700 border border-slate-700 text-brand-300 font-semibold text-sm transition cursor-pointer"
-              >
-                Lap
-              </button>
-              <button
-                id="btn-switch-pomodoro-phase"
-                type="button"
-                onclick="togglePomodoroPhase()"
-                class="hidden px-4 py-3 rounded-xl bg-surface-800 hover:bg-surface-700 border border-slate-700 text-amber-300 font-semibold text-sm transition cursor-pointer"
-              >
-                Switch Break/Focus
-              </button>
-            </div>
+              <!-- Broadcast Timer Controls (Auto-hides cleanly when mouse is idle) -->
+              <div class="chrome-autohide flex flex-wrap items-center justify-between gap-2 pt-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <button
+                    id="btn-timer-toggle"
+                    type="button"
+                    onclick="toggleTimer()"
+                    class="px-5 py-2.5 rounded-xl bg-[#00FF66] hover:brightness-105 text-obsidian-950 font-display font-bold text-xs sm:text-sm tracking-wide transition cursor-pointer min-w-[115px]"
+                  >
+                    Start
+                  </button>
+                  <button
+                    id="btn-timer-reset"
+                    type="button"
+                    onclick="handleResetRequest()"
+                    class="px-4 py-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-200 font-semibold text-xs sm:text-sm transition cursor-pointer"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    id="btn-timer-lap"
+                    type="button"
+                    onclick="recordMilestoneLap()"
+                    class="px-4 py-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-[#FF5E00] font-semibold text-xs sm:text-sm transition cursor-pointer"
+                  >
+                    Log Milestone
+                  </button>
+                  <button
+                    id="btn-pomodoro-skip"
+                    type="button"
+                    onclick="switchPomodoroPhaseManually()"
+                    class="hidden px-3.5 py-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300 font-semibold text-xs transition cursor-pointer"
+                  >
+                    Switch Phase
+                  </button>
+                </div>
 
-            <!-- Optional Lap Log (Compact) -->
-            <div id="laps-container" class="hidden mt-4 pt-3.5 border-t border-slate-800/80">
-              <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
-                <span class="font-semibold uppercase tracking-wider">Session Laps</span>
-                <button type="button" onclick="clearLaps()" class="text-slate-400 hover:text-brand-400 cursor-pointer">Clear Laps</button>
+                <span class="hidden sm:inline-block text-[10px] font-mono text-slate-500">
+                  [SPACE] Start/Pause • [R] Reset • [H] Hide UI
+                </span>
               </div>
-              <ul id="laps-list" class="max-h-28 overflow-y-auto space-y-1.5 text-xs tabular-nums"></ul>
+
+              <!-- Compact Milestone / Lap Strip (Shown only when milestones are logged) -->
+              <div id="milestones-panel" class="hidden pt-3 border-t border-white/[0.07]">
+                <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-2">
+                  <span class="uppercase tracking-wider font-bold text-slate-300">LOGGED MILESTONES</span>
+                  <button type="button" onclick="clearMilestones()" class="hover:text-[#FF5E00] transition cursor-pointer">
+                    Clear
+                  </button>
+                </div>
+                <ul id="milestones-list" class="max-h-24 overflow-y-auto space-y-1 text-xs font-mono tabular-nums"></ul>
+              </div>
             </div>
           </div>
 
-          <!-- Right Card: Interactive Task Checklist -->
-          <div class="lg:col-span-5 rounded-3xl bg-surface-900/95 border border-slate-800/90 shadow-2xl shadow-black/60 p-5 sm:p-6 backdrop-blur-md">
-            <div class="flex items-center justify-between gap-2 mb-3">
-              <div>
-                <h3 class="text-xs font-extrabold uppercase tracking-wider text-brand-400">
-                  AAJ KE TASKS
-                </h3>
-                <p class="text-xs text-slate-400 mt-0.5">Click task to mark complete</p>
+          <!-- RIGHT PANEL (5 Cols): Clean Session Agenda Card -->
+          <div class="lg:col-span-5 studio-panel rounded-3xl p-6 sm:p-7 flex flex-col justify-between relative overflow-hidden">
+            <!-- Precision Left Edge Neon Accent -->
+            <div class="absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-[#00FF66] to-[#FF5E00]"></div>
+
+            <div>
+              <!-- Agenda Header -->
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-full bg-[#FF5E00]"></span>
+                  <h3 class="font-mono text-xs font-bold uppercase tracking-[0.16em] text-white">
+                    SESSION AGENDA
+                  </h3>
+                </div>
+                <span id="agenda-badge-count" class="font-mono text-[11px] font-bold px-2.5 py-1 rounded-lg bg-obsidian-950/90 border border-white/10 text-[#00FF66] tabular-nums">
+                  0 / 0 COMPLETED
+                </span>
               </div>
-              <div class="px-3 py-1 rounded-full bg-surface-800 border border-slate-700 text-xs font-bold text-white tabular-nums">
-                <span id="tasks-progress-text">0 / 0 Done</span>
+
+              <!-- Sleek Dual-Color Progress Track -->
+              <div class="w-full h-1.5 rounded-full bg-obsidian-950 overflow-hidden mb-5">
+                <div id="agenda-progress-bar" class="h-full bg-gradient-to-r from-[#00FF66] to-[#FF5E00] transition-all duration-300 w-0"></div>
               </div>
+
+              <!-- Spacious Task Rows -->
+              <ul id="agenda-task-list" class="space-y-2.5 max-h-[370px] overflow-y-auto pr-1"></ul>
             </div>
 
-            <!-- Progress bar -->
-            <div class="w-full h-2 rounded-full bg-surface-850 overflow-hidden mb-4">
-              <div id="tasks-progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-amber-400 transition-all duration-300 w-0"></div>
-            </div>
-
-            <!-- Task List -->
-            <ul id="live-task-list" class="space-y-2 max-h-[340px] overflow-y-auto pr-1 mb-4"></ul>
-
-            <!-- Quick Add & Clear Controls -->
-            <form onsubmit="handleQuickAddTask(event)" class="flex gap-2 mb-2.5">
-              <input
-                id="quick-task-input"
-                type="text"
-                placeholder="Add a quick task..."
-                class="flex-1 rounded-xl bg-surface-850 border border-slate-700/80 focus:border-brand-500 px-3 py-2 text-xs sm:text-sm text-white placeholder-slate-500 outline-none"
-              />
-              <button
-                type="submit"
-                class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-xs sm:text-sm font-semibold text-white transition cursor-pointer shrink-0"
-              >
-                + Add
-              </button>
-            </form>
-
-            <div class="flex items-center justify-between text-xs pt-1">
-              <button
-                type="button"
-                onclick="resetCompletedTasks()"
-                class="text-slate-400 hover:text-slate-200 transition cursor-pointer"
-              >
-                Uncheck All
-              </button>
-              <button
-                type="button"
-                onclick="clearAllTasks()"
-                class="text-slate-400 hover:text-rose-400 transition cursor-pointer"
-              >
-                Clear Tasks
-              </button>
+            <!-- Inline Quick Add (Auto-hides in idle broadcast mode for a clean stream) -->
+            <div class="chrome-autohide pt-4 mt-4 border-t border-white/[0.07]">
+              <form onsubmit="handleInlineTaskAdd(event)" class="flex gap-2">
+                <input
+                  id="inline-task-input"
+                  type="text"
+                  placeholder="Add agenda item..."
+                  class="flex-1 rounded-xl bg-obsidian-950/90 border border-white/10 focus:border-[#00FF66] px-3.5 py-2 text-xs sm:text-sm text-white placeholder-slate-500 outline-none"
+                />
+                <button
+                  type="submit"
+                  class="px-3.5 py-2 rounded-xl bg-obsidian-800 hover:bg-obsidian-700 border border-white/10 text-xs sm:text-sm font-semibold text-[#00FF66] transition cursor-pointer shrink-0"
+                >
+                  + Add
+                </button>
+              </form>
             </div>
           </div>
+
         </div>
 
-        <!-- Subtle footer note -->
-        <footer class="max-w-5xl w-full mx-auto mt-6 text-center text-[11px] text-slate-500">
-          Study With Me Marathon Overlay • Built for Live Streams & OBS Browser Sources
-        </footer>
+        <!-- Minimal Broadcast Footer Watermark -->
+        <div class="max-w-6xl w-full mx-auto mt-5 flex items-center justify-between text-[10px] font-mono uppercase tracking-widest text-slate-500/80 px-1">
+          <span>BRO_STUDIES • MARATHON TELEMETRY</span>
+          <span id="live-clock-readout" class="tabular-nums">00:00 IST</span>
+        </div>
       </section>
     </main>
   </div>
 
-  <!-- ==================== 3. STANDALONE HTML CODE MODAL ==================== -->
-  <div id="code-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm p-4 flex items-center justify-center">
-    <div class="max-w-3xl w-full rounded-3xl bg-surface-900 border border-slate-700/90 shadow-2xl overflow-hidden flex flex-col max-h-[88vh]">
-      <div class="px-5 py-4 border-b border-slate-800 flex items-center justify-between gap-3">
+  <!-- ==================== 3. RESET CONFIRMATION DIALOG (NO confirm()) ==================== -->
+  <div id="reset-confirm-modal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm p-4 flex items-center justify-center">
+    <div class="max-w-sm w-full studio-panel rounded-2xl p-5 border border-white/15">
+      <h4 class="font-display text-base font-bold text-white">Reset Broadcast Timer?</h4>
+      <p class="text-xs text-slate-400 mt-1.5">
+        This will reset the active timer back to its starting value. Your completed tasks will remain intact.
+      </p>
+      <div class="mt-4 flex items-center justify-end gap-2">
+        <button
+          type="button"
+          onclick="closeResetModal()"
+          class="px-3.5 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-xs font-semibold text-slate-300 cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          onclick="confirmResetTimer()"
+          class="px-3.5 py-2 rounded-xl bg-[#FF5E00] hover:brightness-110 text-xs font-bold text-white cursor-pointer"
+        >
+          Reset Timer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 4. STANDALONE BROADCAST HTML MODAL ==================== -->
+  <div id="export-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md p-4 flex items-center justify-center">
+    <div class="max-w-3xl w-full studio-panel rounded-3xl overflow-hidden flex flex-col max-h-[88vh]">
+      <div class="px-6 py-4 border-b border-white/[0.08] flex items-center justify-between gap-3">
         <div>
-          <h3 class="text-base sm:text-lg font-bold text-white">Copy Standalone HTML Code</h3>
-          <p class="text-xs text-slate-400">Single-file index.html — host anywhere or open directly in browser / OBS</p>
+          <h3 class="font-display text-base sm:text-lg font-bold text-white">Standalone Broadcast HTML</h3>
+          <p class="text-xs text-slate-400">Self-contained single-file broadcast studio — download or copy source</p>
         </div>
         <button
           type="button"
-          onclick="closeCodeModal()"
-          class="p-2 rounded-xl bg-surface-800 hover:bg-surface-700 text-slate-300 transition cursor-pointer"
+          onclick="closeExportModal()"
+          class="p-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 text-slate-300 transition cursor-pointer"
           aria-label="Close modal"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -520,356 +667,436 @@ Math — Percentage chapter</textarea>
 
       <div class="p-5 overflow-y-auto flex-1">
         <textarea
-          id="standalone-html-preview"
+          id="export-html-textarea"
           readonly
           rows="16"
-          class="w-full rounded-2xl bg-surface-950 border border-slate-800 p-4 text-xs font-mono text-slate-200 leading-relaxed outline-none"
+          class="w-full rounded-2xl bg-obsidian-950 border border-white/10 p-4 text-xs font-mono text-slate-200 leading-relaxed outline-none"
         ></textarea>
       </div>
 
-      <div class="px-5 py-3.5 border-t border-slate-800 bg-surface-900/90 flex flex-wrap items-center justify-end gap-2.5">
+      <div class="px-6 py-4 border-t border-white/[0.08] bg-obsidian-900/90 flex flex-wrap items-center justify-end gap-2.5">
         <button
           type="button"
-          onclick="downloadStandaloneHtml()"
-          class="px-4 py-2 rounded-xl bg-surface-800 hover:bg-surface-700 border border-slate-700 text-xs sm:text-sm font-semibold text-slate-200 transition cursor-pointer"
+          onclick="downloadBroadcastHtml()"
+          class="px-4 py-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-xs sm:text-sm font-semibold text-slate-200 transition cursor-pointer"
         >
-          Download index.html
+          Download bro_studies_marathon.html
         </button>
         <button
           type="button"
-          onclick="copyStandaloneHtml()"
-          class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-xs sm:text-sm font-semibold text-white transition cursor-pointer"
+          onclick="copyBroadcastHtml()"
+          class="px-4 py-2 rounded-xl bg-[#00FF66] hover:brightness-105 text-obsidian-950 text-xs sm:text-sm font-bold transition cursor-pointer"
         >
-          Copy HTML Code
+          Copy HTML Source
         </button>
       </div>
     </div>
   </div>
 
   <script>
-    // ==================== STATE MANAGEMENT ====================
-    const POMODORO_FOCUS_SEC = 25 * 60;
-    const POMODORO_BREAK_SEC = 5 * 60;
+    // ==================== APPLICATION STATE & STORAGE ====================
+    const STORAGE_KEY = 'bro_studies_marathon_state_v1';
 
-    const appState = {
-      view: 'config', // 'config' | 'overlay'
-      channelName: '',
-      sessionName: '',
-      brandName: 'Sarvodaya Adhyeta',
+    const state = {
+      view: 'setup', // 'setup' | 'live'
+      hostName: 'BRO_STUDIES',
+      platformTag: 'YOUTUBE LIVE',
+      sessionTitle: '12-Hour Deep Focus Study Marathon',
       timerMode: 'stopwatch', // 'stopwatch' | 'pomodoro' | 'countdown'
+      focusMins: 50,
+      breakMins: 10,
       targetHours: 6,
       targetMinutes: 0,
-      transparentBg: false,
       tasks: [
-        { id: 1, text: 'Reasoning — 30 questions', done: false },
-        { id: 2, text: 'English Reading Comprehension', done: false },
-        { id: 3, text: 'GK Current Affairs revision', done: false },
-        { id: 4, text: 'Math — Percentage chapter', done: false },
+        { id: 1, text: 'Quantitative Aptitude — 50 Practice Sets', done: false },
+        { id: 2, text: 'Editorial & Reading Comprehension Analysis', done: false },
+        { id: 3, text: 'General Awareness & Static Revision', done: false },
+        { id: 4, text: 'Full-Length Mock Test & Error Log', done: false },
       ],
-      // Timer runtime state
+      // Live Runtime Telemetry
       isRunning: false,
-      timerSeconds: 0,          // Elapsed for stopwatch; remaining for pomodoro/countdown
-      totalMarathonElapsed: 0,  // Total marathon seconds elapsed across session
-      pomodoroPhase: 'focus',   // 'focus' | 'break'
-      laps: [],
+      timerSeconds: 0,
+      totalFocusSeconds: 0,
+      completedCycles: 1,
+      pomodoroPhase: 'focus', // 'focus' | 'break'
+      milestones: [],
+      alphaGrid: false,
+      chromeHiddenManual: false,
       intervalId: null,
     };
 
-    let toastTimeout = null;
+    let toastTimer = null;
+    let idleChromeTimer = null;
 
-    // ==================== TOAST HELPER (NO alert()) ====================
-    function showToast(message) {
-      const banner = document.getElementById('toast-banner');
-      const msgEl = document.getElementById('toast-message');
-      if (!banner || !msgEl) return;
-      msgEl.textContent = message;
-      banner.classList.remove('hidden');
-      clearTimeout(toastTimeout);
-      toastTimeout = setTimeout(() => {
-        banner.classList.add('hidden');
-      }, 3000);
+    // ==================== PERSISTENCE (localStorage + URL Params) ====================
+    function saveStateToStorage() {
+      try {
+        const snapshot = {
+          hostName: state.hostName,
+          platformTag: state.platformTag,
+          sessionTitle: state.sessionTitle,
+          timerMode: state.timerMode,
+          focusMins: state.focusMins,
+          breakMins: state.breakMins,
+          targetHours: state.targetHours,
+          targetMinutes: state.targetMinutes,
+          tasks: state.tasks,
+          timerSeconds: state.timerSeconds,
+          totalFocusSeconds: state.totalFocusSeconds,
+          completedCycles: state.completedCycles,
+          pomodoroPhase: state.pomodoroPhase,
+          milestones: state.milestones,
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+      } catch (e) {
+        // Ignore storage quota / sandbox restrictions
+      }
     }
 
-    // ==================== TIME FORMATTING ====================
-    function formatHMS(totalSec) {
-      const safe = Math.max(0, Math.floor(Number(totalSec) || 0));
-      const hrs = Math.floor(safe / 3600);
-      const mins = Math.floor((safe % 3600) / 60);
-      const secs = safe % 60;
-      return [hrs, mins, secs].map((n) => String(n).padStart(2, '0')).join(':');
+    function loadSavedState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            if (typeof parsed.hostName === 'string') state.hostName = parsed.hostName;
+            if (typeof parsed.platformTag === 'string') state.platformTag = parsed.platformTag;
+            if (typeof parsed.sessionTitle === 'string') state.sessionTitle = parsed.sessionTitle;
+            if (['stopwatch', 'pomodoro', 'countdown'].includes(parsed.timerMode)) state.timerMode = parsed.timerMode;
+            if (Number.isFinite(parsed.focusMins)) state.focusMins = Math.max(1, parsed.focusMins);
+            if (Number.isFinite(parsed.breakMins)) state.breakMins = Math.max(1, parsed.breakMins);
+            if (Number.isFinite(parsed.targetHours)) state.targetHours = Math.max(0, parsed.targetHours);
+            if (Number.isFinite(parsed.targetMinutes)) state.targetMinutes = Math.max(0, Math.min(59, parsed.targetMinutes));
+            if (Array.isArray(parsed.tasks)) state.tasks = parsed.tasks;
+            if (Number.isFinite(parsed.timerSeconds)) state.timerSeconds = Math.max(0, parsed.timerSeconds);
+            if (Number.isFinite(parsed.totalFocusSeconds)) state.totalFocusSeconds = Math.max(0, parsed.totalFocusSeconds);
+            if (Number.isFinite(parsed.completedCycles)) state.completedCycles = Math.max(1, parsed.completedCycles);
+            if (['focus', 'break'].includes(parsed.pomodoroPhase)) state.pomodoroPhase = parsed.pomodoroPhase;
+            if (Array.isArray(parsed.milestones)) state.milestones = parsed.milestones;
+          }
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
     }
 
-    // ==================== URL PARAM PARSING & GENERATION ====================
-    function parseTasksFromText(rawText) {
-      const lines = String(rawText || '')
-        .split(/\r?\n/)
-        .map((line) => line.trim())
-        .filter((line) => line.length > 0);
-      return lines.map((text, idx) => ({
-        id: Date.now() + idx + Math.random(),
-        text,
-        done: false,
-      }));
+    function parseUrlParameters() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const isLive = params.get('live') === '1';
+
+        if (params.has('name')) state.hostName = params.get('name') || 'BRO_STUDIES';
+        if (params.has('platform')) state.platformTag = params.get('platform') || 'YOUTUBE LIVE';
+        if (params.has('session')) state.sessionTitle = params.get('session') || 'Study Marathon';
+        if (params.has('mode')) {
+          const m = params.get('mode');
+          if (['stopwatch', 'pomodoro', 'countdown'].includes(m)) state.timerMode = m;
+        }
+        if (params.has('focus')) state.focusMins = Math.max(1, parseInt(params.get('focus'), 10) || 50);
+        if (params.has('break')) state.breakMins = Math.max(1, parseInt(params.get('break'), 10) || 10);
+        if (params.has('hours')) state.targetHours = Math.max(0, parseInt(params.get('hours'), 10) || 6);
+        if (params.has('mins')) state.targetMinutes = Math.max(0, Math.min(59, parseInt(params.get('mins'), 10) || 0));
+
+        if (params.has('tasks')) {
+          const items = (params.get('tasks') || '')
+            .split('||')
+            .map((s) => s.trim())
+            .filter(Boolean);
+          if (items.length > 0) {
+            state.tasks = items.map((text, idx) => ({ id: idx + 1, text, done: false }));
+          }
+        }
+
+        // If URL params explicitly configure mode without saved timer, initialize clean timer
+        if (params.has('mode') || params.has('hours') || params.has('focus')) {
+          resetTimerValuesOnly();
+        }
+
+        syncFormInputs();
+        updateGeneratedUrlField();
+
+        if (isLive) {
+          switchView('live');
+        } else {
+          switchView('setup');
+        }
+      } catch (e) {
+        syncFormInputs();
+        updateGeneratedUrlField();
+        switchView('setup');
+      }
     }
 
-    function buildOverlayUrl(overrides = {}) {
-      const channel = overrides.channelName !== undefined ? overrides.channelName : appState.channelName;
-      const session = overrides.sessionName !== undefined ? overrides.sessionName : appState.sessionName;
-      const brand = overrides.brandName !== undefined ? overrides.brandName : (appState.brandName || 'Sarvodaya Adhyeta');
-      const mode = overrides.timerMode !== undefined ? overrides.timerMode : appState.timerMode;
-      const th = overrides.targetHours !== undefined ? overrides.targetHours : appState.targetHours;
-      const tm = overrides.targetMinutes !== undefined ? overrides.targetMinutes : appState.targetMinutes;
-      const transparent = overrides.transparentBg !== undefined ? overrides.transparentBg : appState.transparentBg;
-      const taskTexts = overrides.taskTexts !== undefined
-        ? overrides.taskTexts
-        : appState.tasks.map((t) => t.text);
-
+    function buildLiveBroadcastUrl() {
       const url = new URL(window.location.href);
       url.search = '';
       url.hash = '';
       const params = new URLSearchParams();
-      params.set('overlay', '1');
-      if (channel.trim()) params.set('channel', channel.trim());
-      if (session.trim()) params.set('session', session.trim());
-      if (brand.trim()) params.set('brand', brand.trim());
-      params.set('mode', mode);
-      if (mode === 'countdown') {
-        params.set('th', String(Math.max(0, parseInt(th, 10) || 0)));
-        params.set('tm', String(Math.max(0, Math.min(59, parseInt(tm, 10) || 0))));
+      params.set('live', '1');
+      if (state.hostName.trim()) params.set('name', state.hostName.trim());
+      if (state.platformTag.trim()) params.set('platform', state.platformTag.trim());
+      if (state.sessionTitle.trim()) params.set('session', state.sessionTitle.trim());
+      params.set('mode', state.timerMode);
+
+      if (state.timerMode === 'pomodoro') {
+        params.set('focus', String(state.focusMins));
+        params.set('break', String(state.breakMins));
+      } else if (state.timerMode === 'countdown') {
+        params.set('hours', String(state.targetHours));
+        params.set('mins', String(state.targetMinutes));
       }
-      if (taskTexts.length > 0) {
-        params.set('tasks', taskTexts.join('||'));
-      }
-      if (transparent) {
-        params.set('transparent', '1');
+
+      const taskStrings = state.tasks.map((t) => t.text.trim()).filter(Boolean);
+      if (taskStrings.length > 0) {
+        params.set('tasks', taskStrings.join('||'));
       }
 
       url.search = params.toString();
       return url.toString();
     }
 
-    function loadStateFromUrlParams() {
+    function updateGeneratedUrlField() {
+      const field = document.getElementById('generated-live-url');
+      if (field) {
+        field.value = buildLiveBroadcastUrl();
+      }
+    }
+
+    // ==================== AUDIO CHIME (WEB AUDIO API) ====================
+    function playBroadcastChime() {
       try {
-        const params = new URLSearchParams(window.location.search);
-        const isOverlayParam = params.get('overlay') === '1';
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const now = ctx.currentTime;
 
-        if (params.has('channel')) appState.channelName = params.get('channel') || '';
-        if (params.has('session')) appState.sessionName = params.get('session') || '';
-        if (params.has('brand')) appState.brandName = params.get('brand') || 'Sarvodaya Adhyeta';
-        if (params.has('mode')) {
-          const m = params.get('mode');
-          if (['stopwatch', 'pomodoro', 'countdown'].includes(m)) {
-            appState.timerMode = m;
-          }
-        }
-        if (params.has('th')) appState.targetHours = Math.max(0, parseInt(params.get('th'), 10) || 0);
-        if (params.has('tm')) appState.targetMinutes = Math.max(0, Math.min(59, parseInt(params.get('tm'), 10) || 0));
-        if (params.has('transparent')) appState.transparentBg = params.get('transparent') === '1';
-
-        if (params.has('tasks')) {
-          const rawTasks = (params.get('tasks') || '').split('||').map((s) => s.trim()).filter(Boolean);
-          if (rawTasks.length > 0) {
-            appState.tasks = rawTasks.map((text, i) => ({ id: i + 1, text, done: false }));
-          }
-        }
-
-        syncFormFromState();
-        initTimerForCurrentMode(false);
-
-        if (isOverlayParam) {
-          switchView('overlay');
-        } else {
-          switchView('config');
-        }
-      } catch (err) {
-        console.error('Error parsing URL params:', err);
-        syncFormFromState();
-        initTimerForCurrentMode(false);
-        switchView('config');
+        [523.25, 659.25, 783.99].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+          gain.gain.setValueAtTime(0.001, now + idx * 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.12, now + idx * 0.14 + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.14 + 0.55);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.14);
+          osc.stop(now + idx * 0.14 + 0.6);
+        });
+      } catch (e) {
+        // Audio blocked until user gesture
       }
     }
 
-    function syncFormFromState() {
-      document.getElementById('channel-name').value = appState.channelName;
-      document.getElementById('session-name').value = appState.sessionName;
-      document.getElementById('brand-name').value = appState.brandName;
-      document.getElementById('timer-mode').value = appState.timerMode;
-      document.getElementById('target-hours').value = appState.targetHours;
-      document.getElementById('target-minutes').value = appState.targetMinutes;
-      document.getElementById('obs-transparent-toggle').checked = appState.transparentBg;
-      document.getElementById('tasks-input').value = appState.tasks.map((t) => t.text).join('\n');
-      toggleMarathonTargetInputs();
-      updateTaskLineCounter();
+    // ==================== UI HELPERS & TOAST ====================
+    function showToast(msg) {
+      const banner = document.getElementById('toast-banner');
+      const text = document.getElementById('toast-message');
+      if (!banner || !text) return;
+      text.textContent = msg;
+      banner.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 3000);
     }
 
-    function toggleMarathonTargetInputs() {
-      const mode = document.getElementById('timer-mode').value;
-      const box = document.getElementById('countdown-target-box');
-      if (mode === 'countdown') {
-        box.classList.remove('hidden');
-      } else {
-        box.classList.add('hidden');
-      }
+    function formatHMS(totalSeconds) {
+      const safe = Math.max(0, Math.floor(Number(totalSeconds) || 0));
+      const h = Math.floor(safe / 3600);
+      const m = Math.floor((safe % 3600) / 60);
+      const s = safe % 60;
+      return [h, m, s].map((v) => String(v).padStart(2, '0')).join(':');
     }
 
-    function updateTaskLineCounter() {
-      const raw = document.getElementById('tasks-input').value || '';
-      const count = raw.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).length;
-      const counter = document.getElementById('task-line-counter');
-      counter.textContent = `${count} / 6 recommended`;
-      if (count > 6) {
-        counter.classList.remove('text-slate-400');
-        counter.classList.add('text-brand-400', 'font-semibold');
-      } else {
-        counter.classList.add('text-slate-400');
-        counter.classList.remove('text-brand-400', 'font-semibold');
-      }
-    }
-
-    // ==================== FORM SUBMIT -> GENERATE OVERLAY LINK ====================
-    function handleGenerateOverlay(event) {
-      event.preventDefault();
-      appState.channelName = document.getElementById('channel-name').value.trim();
-      appState.sessionName = document.getElementById('session-name').value.trim();
-      appState.brandName = document.getElementById('brand-name').value.trim() || 'Sarvodaya Adhyeta';
-      appState.timerMode = document.getElementById('timer-mode').value;
-      appState.targetHours = Math.max(0, parseInt(document.getElementById('target-hours').value, 10) || 0);
-      appState.targetMinutes = Math.max(0, Math.min(59, parseInt(document.getElementById('target-minutes').value, 10) || 0));
-      appState.transparentBg = document.getElementById('obs-transparent-toggle').checked;
-
-      const parsedTasks = parseTasksFromText(document.getElementById('tasks-input').value);
-      appState.tasks = parsedTasks;
-
-      const generatedUrl = buildOverlayUrl();
-      const panel = document.getElementById('generated-link-panel');
-      const input = document.getElementById('generated-url-input');
-      input.value = generatedUrl;
-      panel.classList.remove('hidden');
-
-      initTimerForCurrentMode(false);
-      renderOverlayDetails();
-      renderTaskList();
-      showToast('Overlay link ready! Copy karo ya Live Overlay open karo.');
-    }
-
-    function copyToClipboardFallback(text) {
+    function copyTextSafely(text) {
       try {
-        const tempTextarea = document.createElement('textarea');
-        tempTextarea.value = text;
-        tempTextarea.setAttribute('readonly', '');
-        tempTextarea.style.position = 'fixed';
-        tempTextarea.style.left = '-9999px';
-        document.body.appendChild(tempTextarea);
-        tempTextarea.select();
+        const el = document.createElement('textarea');
+        el.value = text;
+        el.setAttribute('readonly', '');
+        el.style.position = 'fixed';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
         const ok = document.execCommand('copy');
-        document.body.removeChild(tempTextarea);
+        document.body.removeChild(el);
         return ok;
       } catch (e) {
         return false;
       }
     }
 
-    function copyGeneratedUrl() {
-      const input = document.getElementById('generated-url-input');
-      if (!input || !input.value) return;
-      if (copyToClipboardFallback(input.value)) {
-        showToast('Overlay link clipboard mein copy ho gaya!');
+    function copyLiveUrl() {
+      const url = buildLiveBroadcastUrl();
+      if (copyTextSafely(url)) {
+        showToast('Live Broadcast URL copied to clipboard.');
       } else {
-        showToast('Link select karke manually copy kar lo.');
+        showToast('Select the link and copy manually.');
       }
     }
 
-    function copyCurrentOverlayUrl() {
-      const url = buildOverlayUrl();
-      if (copyToClipboardFallback(url)) {
-        showToast('Current Overlay URL copy ho gaya!');
+    // ==================== SETUP FORM HANDLERS ====================
+    function syncFormInputs() {
+      document.getElementById('input-host-name').value = state.hostName;
+      document.getElementById('input-platform-tag').value = state.platformTag;
+      document.getElementById('input-session-title').value = state.sessionTitle;
+      document.getElementById('input-timer-mode').value = state.timerMode;
+      document.getElementById('input-focus-mins').value = state.focusMins;
+      document.getElementById('input-break-mins').value = state.breakMins;
+      document.getElementById('input-target-hours').value = state.targetHours;
+      document.getElementById('input-target-minutes').value = state.targetMinutes;
+      document.getElementById('input-agenda-tasks').value = state.tasks.map((t) => t.text).join('\n');
+      handleModeSelectionChange();
+      updateAgendaLineCounter();
+    }
+
+    function handleModeSelectionChange() {
+      const mode = document.getElementById('input-timer-mode').value;
+      const pomoBox = document.getElementById('pomodoro-config-box');
+      const countBox = document.getElementById('countdown-config-box');
+
+      pomoBox.classList.toggle('hidden', mode !== 'pomodoro');
+      countBox.classList.toggle('hidden', mode !== 'countdown');
+    }
+
+    function updateAgendaLineCounter() {
+      const raw = document.getElementById('input-agenda-tasks').value || '';
+      const count = raw.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).length;
+      document.getElementById('agenda-line-count').textContent = `${count} ${count === 1 ? 'task' : 'tasks'}`;
+    }
+
+    function handleLaunchSession(event) {
+      event.preventDefault();
+      state.hostName = document.getElementById('input-host-name').value.trim() || 'BRO_STUDIES';
+      state.platformTag = document.getElementById('input-platform-tag').value.trim() || 'YOUTUBE LIVE';
+      state.sessionTitle = document.getElementById('input-session-title').value.trim() || 'Study Marathon Session';
+      state.timerMode = document.getElementById('input-timer-mode').value;
+      state.focusMins = Math.max(1, parseInt(document.getElementById('input-focus-mins').value, 10) || 50);
+      state.breakMins = Math.max(1, parseInt(document.getElementById('input-break-mins').value, 10) || 10);
+      state.targetHours = Math.max(0, parseInt(document.getElementById('input-target-hours').value, 10) || 0);
+      state.targetMinutes = Math.max(0, Math.min(59, parseInt(document.getElementById('input-target-minutes').value, 10) || 0));
+
+      const rawLines = (document.getElementById('input-agenda-tasks').value || '')
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter(Boolean);
+
+      state.tasks = rawLines.map((text, idx) => ({
+        id: Date.now() + idx,
+        text,
+        done: false,
+      }));
+
+      pauseTimer();
+      resetTimerValuesOnly();
+      saveStateToStorage();
+      updateGeneratedUrlField();
+
+      try {
+        window.history.replaceState({}, '', buildLiveBroadcastUrl());
+      } catch (e) {
+        // Ignore history restrictions
+      }
+
+      switchView('live');
+    }
+
+    // ==================== VIEW SWITCHING & ALPHA TRANSPARENCY ====================
+    function switchView(target) {
+      state.view = target;
+      const setupEl = document.getElementById('setup-view');
+      const liveEl = document.getElementById('live-view');
+      const navSetup = document.getElementById('nav-setup-btn');
+      const navLive = document.getElementById('nav-live-btn');
+      const htmlEl = document.documentElement;
+
+      if (target === 'live') {
+        setupEl.classList.add('hidden');
+        liveEl.classList.remove('hidden');
+        htmlEl.classList.add('live-alpha');
+        if (state.alphaGrid) htmlEl.classList.add('alpha-grid-preview');
+
+        navLive.classList.add('ring-2', 'ring-[#00FF66]/40');
+        navSetup.classList.remove('ring-2', 'ring-[#00FF66]/40');
+
+        renderBroadcastHud();
+        renderAgendaTasks();
+        renderMilestones();
+        resetIdleChromeTimer();
       } else {
-        showToast('URL copy nahi ho paya.');
+        liveEl.classList.add('hidden');
+        setupEl.classList.remove('hidden');
+        htmlEl.classList.remove('live-alpha', 'alpha-grid-preview');
+        document.body.classList.remove('chrome-idle');
+        clearTimeout(idleChromeTimer);
+
+        navSetup.classList.add('ring-2', 'ring-[#00FF66]/40');
+        navLive.classList.remove('ring-2', 'ring-[#00FF66]/40');
+
+        syncFormInputs();
+        updateGeneratedUrlField();
       }
     }
 
-    function launchLiveOverlayFromGenerated() {
-      const input = document.getElementById('generated-url-input');
-      if (input && input.value) {
-        try {
-          window.history.replaceState({}, '', input.value);
-        } catch (e) {
-          // Ignore history push errors in sandboxed iframes
+    function toggleAlphaGridPreview() {
+      state.alphaGrid = !state.alphaGrid;
+      const htmlEl = document.documentElement;
+      const btn = document.getElementById('btn-alpha-grid');
+      if (state.alphaGrid) {
+        htmlEl.classList.add('alpha-grid-preview');
+        btn.classList.add('border-[#00FF66]/50', 'text-[#00FF66]');
+        showToast('Alpha Grid preview enabled.');
+      } else {
+        htmlEl.classList.remove('alpha-grid-preview');
+        btn.classList.remove('border-[#00FF66]/50', 'text-[#00FF66]');
+        showToast('Pure transparent background active.');
+      }
+    }
+
+    function resetIdleChromeTimer() {
+      if (state.view !== 'live') return;
+      if (!state.chromeHiddenManual) {
+        document.body.classList.remove('chrome-idle');
+      }
+      clearTimeout(idleChromeTimer);
+      idleChromeTimer = setTimeout(() => {
+        if (state.view === 'live') {
+          document.body.classList.add('chrome-idle');
         }
-      }
-      switchView('overlay');
+      }, 3000);
     }
 
-    // ==================== VIEW SWITCHING & TRANSPARENT MODE ====================
-    function switchView(targetView) {
-      appState.view = targetView;
-      const configEl = document.getElementById('config-view');
-      const overlayEl = document.getElementById('overlay-view');
-      const navConfig = document.getElementById('nav-config-btn');
-      const navOverlay = document.getElementById('nav-overlay-btn');
-
-      if (targetView === 'overlay') {
-        configEl.classList.add('hidden');
-        overlayEl.classList.remove('hidden');
-        navOverlay.classList.add('ring-2', 'ring-brand-500/50');
-        navConfig.classList.remove('ring-2', 'ring-brand-500/50');
-        applyTransparentMode(appState.transparentBg);
-        renderOverlayDetails();
-        renderTaskList();
-        renderTimerDisplay();
+    function toggleManualChromeVisibility() {
+      if (state.view !== 'live') return;
+      state.chromeHiddenManual = !state.chromeHiddenManual;
+      if (state.chromeHiddenManual) {
+        document.body.classList.add('chrome-idle');
+        clearTimeout(idleChromeTimer);
       } else {
-        overlayEl.classList.add('hidden');
-        configEl.classList.remove('hidden');
-        navConfig.classList.add('ring-2', 'ring-brand-500/50');
-        navOverlay.classList.remove('ring-2', 'ring-brand-500/50');
-        applyTransparentMode(false);
-        syncFormFromState();
+        document.body.classList.remove('chrome-idle');
+        resetIdleChromeTimer();
       }
     }
 
-    function applyTransparentMode(isTransparent) {
-      const body = document.body;
-      const topBar = document.getElementById('top-bar');
-      if (isTransparent && appState.view === 'overlay') {
-        body.classList.add('obs-transparent');
-        topBar.classList.add('opacity-15', 'hover:opacity-100', 'transition-opacity');
+    // ==================== TIMER ENGINE ====================
+    function getCountdownDurationSeconds() {
+      const total = state.targetHours * 3600 + state.targetMinutes * 60;
+      return total > 0 ? total : 3600;
+    }
+
+    function resetTimerValuesOnly() {
+      if (state.timerMode === 'stopwatch') {
+        state.timerSeconds = 0;
+      } else if (state.timerMode === 'pomodoro') {
+        state.pomodoroPhase = 'focus';
+        state.timerSeconds = state.focusMins * 60;
       } else {
-        body.classList.remove('obs-transparent');
-        topBar.classList.remove('opacity-15', 'hover:opacity-100', 'transition-opacity');
+        state.timerSeconds = getCountdownDurationSeconds();
       }
-    }
-
-    function toggleOverlayBackdrop() {
-      appState.transparentBg = !appState.transparentBg;
-      applyTransparentMode(appState.transparentBg);
-      showToast(appState.transparentBg ? 'OBS Transparent BG ON' : 'Dark Card Backdrop ON');
-    }
-
-    // ==================== TIMER ENGINE (STOPWATCH / POMODORO / COUNTDOWN) ====================
-    function getCountdownTotalSeconds() {
-      const h = Math.max(0, parseInt(appState.targetHours, 10) || 0);
-      const m = Math.max(0, Math.min(59, parseInt(appState.targetMinutes, 10) || 0));
-      const total = h * 3600 + m * 60;
-      return total > 0 ? total : 3600; // Default 1 hr fallback if both 0
-    }
-
-    function initTimerForCurrentMode(keepRunning = false) {
-      if (!keepRunning) {
-        pauseTimer();
-      }
-      if (appState.timerMode === 'stopwatch') {
-        appState.timerSeconds = 0;
-      } else if (appState.timerMode === 'pomodoro') {
-        appState.pomodoroPhase = 'focus';
-        appState.timerSeconds = POMODORO_FOCUS_SEC;
-      } else if (appState.timerMode === 'countdown') {
-        appState.timerSeconds = getCountdownTotalSeconds();
-      }
-      renderTimerDisplay();
     }
 
     function toggleTimer() {
-      if (appState.isRunning) {
+      if (state.isRunning) {
         pauseTimer();
       } else {
         startTimer();
@@ -877,226 +1104,273 @@ Math — Percentage chapter</textarea>
     }
 
     function startTimer() {
-      if (appState.isRunning) return;
-      appState.isRunning = true;
-      updateStartPauseButton();
+      if (state.isRunning) return;
+      state.isRunning = true;
+      renderBroadcastHud();
 
-      appState.intervalId = setInterval(() => {
-        appState.totalMarathonElapsed += 1;
+      state.intervalId = setInterval(() => {
+        // Count total active focus time
+        if (state.timerMode !== 'pomodoro' || state.pomodoroPhase === 'focus') {
+          state.totalFocusSeconds += 1;
+        }
 
-        if (appState.timerMode === 'stopwatch') {
-          appState.timerSeconds += 1;
-        } else if (appState.timerMode === 'pomodoro') {
-          if (appState.timerSeconds > 1) {
-            appState.timerSeconds -= 1;
+        if (state.timerMode === 'stopwatch') {
+          state.timerSeconds += 1;
+        } else if (state.timerMode === 'pomodoro') {
+          if (state.timerSeconds > 1) {
+            state.timerSeconds -= 1;
           } else {
-            // Auto-switch between 25m Focus and 5m Break
-            if (appState.pomodoroPhase === 'focus') {
-              appState.pomodoroPhase = 'break';
-              appState.timerSeconds = POMODORO_BREAK_SEC;
-              showToast('Focus complete! 5 min Break started.');
+            playBroadcastChime();
+            if (state.pomodoroPhase === 'focus') {
+              state.pomodoroPhase = 'break';
+              state.timerSeconds = state.breakMins * 60;
+              showToast(`Focus cycle complete — ${state.breakMins}m break started.`);
             } else {
-              appState.pomodoroPhase = 'focus';
-              appState.timerSeconds = POMODORO_FOCUS_SEC;
-              showToast('Break over! 25 min Focus started.');
+              state.pomodoroPhase = 'focus';
+              state.completedCycles += 1;
+              state.timerSeconds = state.focusMins * 60;
+              showToast(`Cycle ${String(state.completedCycles).padStart(2, '0')} focus started.`);
             }
           }
-        } else if (appState.timerMode === 'countdown') {
-          if (appState.timerSeconds > 1) {
-            appState.timerSeconds -= 1;
+        } else if (state.timerMode === 'countdown') {
+          if (state.timerSeconds > 1) {
+            state.timerSeconds -= 1;
           } else {
-            appState.timerSeconds = 0;
+            state.timerSeconds = 0;
+            playBroadcastChime();
             pauseTimer();
-            showToast('Marathon Countdown complete! Great session!');
+            showToast('Countdown target reached.');
           }
         }
 
-        renderTimerDisplay();
+        saveStateToStorage();
+        renderBroadcastHud();
       }, 1000);
     }
 
     function pauseTimer() {
-      appState.isRunning = false;
-      if (appState.intervalId) {
-        clearInterval(appState.intervalId);
-        appState.intervalId = null;
+      state.isRunning = false;
+      if (state.intervalId) {
+        clearInterval(state.intervalId);
+        state.intervalId = null;
       }
-      updateStartPauseButton();
-      renderTimerDisplay();
+      saveStateToStorage();
+      renderBroadcastHud();
     }
 
-    function resetTimer() {
-      initTimerForCurrentMode(false);
+    function handleResetRequest() {
+      document.getElementById('reset-confirm-modal').classList.remove('hidden');
+    }
+
+    function closeResetModal() {
+      document.getElementById('reset-confirm-modal').classList.add('hidden');
+    }
+
+    function confirmResetTimer() {
+      closeResetModal();
+      pauseTimer();
+      resetTimerValuesOnly();
+      saveStateToStorage();
+      renderBroadcastHud();
       showToast('Timer reset.');
     }
 
-    function togglePomodoroPhase() {
-      if (appState.timerMode !== 'pomodoro') return;
-      pauseTimer();
-      if (appState.pomodoroPhase === 'focus') {
-        appState.pomodoroPhase = 'break';
-        appState.timerSeconds = POMODORO_BREAK_SEC;
+    function switchPomodoroPhaseManually() {
+      if (state.timerMode !== 'pomodoro') return;
+      if (state.pomodoroPhase === 'focus') {
+        state.pomodoroPhase = 'break';
+        state.timerSeconds = state.breakMins * 60;
       } else {
-        appState.pomodoroPhase = 'focus';
-        appState.timerSeconds = POMODORO_FOCUS_SEC;
+        state.pomodoroPhase = 'focus';
+        state.completedCycles += 1;
+        state.timerSeconds = state.focusMins * 60;
       }
-      renderTimerDisplay();
+      saveStateToStorage();
+      renderBroadcastHud();
     }
 
-    function recordLap() {
-      const labelTime = formatHMS(appState.timerSeconds);
-      const elapsedTime = formatHMS(appState.totalMarathonElapsed);
-      appState.laps.unshift({
-        num: appState.laps.length + 1,
-        timerVal: labelTime,
-        marathonVal: elapsedTime,
+    function recordMilestoneLap() {
+      const stamp = formatHMS(state.timerSeconds);
+      const total = formatHMS(state.totalFocusSeconds);
+      state.milestones.unshift({
+        index: state.milestones.length + 1,
+        stamp,
+        total,
       });
-      renderLaps();
-      showToast(`Lap #${appState.laps.length} recorded (${labelTime})`);
+      if (state.timerMode === 'stopwatch') {
+        state.completedCycles = state.milestones.length + 1;
+      }
+      saveStateToStorage();
+      renderMilestones();
+      renderBroadcastHud();
+      showToast(`Milestone #${state.milestones.length} logged at ${stamp}`);
     }
 
-    function clearLaps() {
-      appState.laps = [];
-      renderLaps();
+    function clearMilestones() {
+      state.milestones = [];
+      saveStateToStorage();
+      renderMilestones();
     }
 
-    function renderLaps() {
-      const container = document.getElementById('laps-container');
-      const list = document.getElementById('laps-list');
-      const countBadge = document.getElementById('laps-count-indicator');
-      const countVal = document.getElementById('laps-count-val');
-
-      if (!appState.laps.length) {
-        container.classList.add('hidden');
-        countBadge.classList.add('hidden');
+    function renderMilestones() {
+      const panel = document.getElementById('milestones-panel');
+      const list = document.getElementById('milestones-list');
+      if (!state.milestones.length) {
+        panel.classList.add('hidden');
         return;
       }
-
-      container.classList.remove('hidden');
-      countBadge.classList.remove('hidden');
-      countVal.textContent = String(appState.laps.length);
-
-      list.innerHTML = appState.laps
+      panel.classList.remove('hidden');
+      list.innerHTML = state.milestones
         .map(
-          (lap) => `
-          <li class="flex items-center justify-between px-3 py-1.5 rounded-lg bg-surface-850 border border-slate-800/80 text-slate-300">
-            <span class="font-semibold text-brand-400">Lap #${lap.num}</span>
-            <span class="font-bold text-white">${lap.timerVal}</span>
-            <span class="text-slate-400">Total: ${lap.marathonVal}</span>
+          (m) => `
+          <li class="flex items-center justify-between px-3 py-1.5 rounded-lg bg-obsidian-950/90 border border-white/[0.06] text-slate-300">
+            <span class="text-[#FF5E00] font-bold">M-${String(m.index).padStart(2, '0')}</span>
+            <span class="text-white font-bold">${m.stamp}</span>
+            <span class="text-slate-500">FOCUS ${m.total}</span>
           </li>`
         )
         .join('');
     }
 
-    function updateStartPauseButton() {
-      const btn = document.getElementById('btn-start-pause');
-      const statusPill = document.getElementById('live-status-pill');
-      if (!btn || !statusPill) return;
+    function renderBroadcastHud() {
+      // Identity & Title
+      document.getElementById('hud-host-name').textContent = state.hostName || 'BRO_STUDIES';
+      document.getElementById('hud-platform-tag').textContent = state.platformTag || 'YOUTUBE LIVE';
+      document.getElementById('hud-session-title').textContent = state.sessionTitle || 'Study Marathon Session';
 
-      if (appState.isRunning) {
-        btn.textContent = 'Pause';
-        statusPill.textContent = 'Live Running';
-        statusPill.className = 'px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-semibold';
+      // Hero Digits
+      document.getElementById('hud-hero-timer').textContent = formatHMS(state.timerSeconds);
+
+      // Mode Labels & Progress Bar
+      const modeLabel = document.getElementById('hud-timer-mode-label');
+      const barTag = document.getElementById('live-bar-mode-tag');
+      const cycleBadge = document.getElementById('hud-cycle-badge');
+      const skipBtn = document.getElementById('btn-pomodoro-skip');
+      const progressWrap = document.getElementById('hud-timer-progress-wrap');
+      const progressBar = document.getElementById('hud-timer-progress-bar');
+      const activeBar = document.getElementById('hud-timer-active-bar');
+
+      if (state.timerMode === 'stopwatch') {
+        modeLabel.textContent = 'MARATHON STOPWATCH';
+        barTag.textContent = 'STOPWATCH';
+        cycleBadge.classList.add('hidden');
+        skipBtn.classList.add('hidden');
+        progressWrap.classList.add('hidden');
+        activeBar.className = 'h-1.5 w-6 rounded-full bg-[#00FF66]';
+      } else if (state.timerMode === 'pomodoro') {
+        const isFocus = state.pomodoroPhase === 'focus';
+        modeLabel.textContent = isFocus
+          ? `POMODORO FOCUS (${state.focusMins}M)`
+          : `RECOVERY BREAK (${state.breakMins}M)`;
+        barTag.textContent = `POMODORO ${state.focusMins}/${state.breakMins}`;
+        cycleBadge.classList.remove('hidden');
+        cycleBadge.textContent = `CYCLE ${String(state.completedCycles).padStart(2, '0')}`;
+        skipBtn.classList.remove('hidden');
+        progressWrap.classList.remove('hidden');
+
+        const totalPhaseSec = (isFocus ? state.focusMins : state.breakMins) * 60;
+        const pct = totalPhaseSec > 0 ? Math.min(100, Math.max(0, ((totalPhaseSec - state.timerSeconds) / totalPhaseSec) * 100)) : 0;
+        progressBar.style.width = `${pct}%`;
+        activeBar.className = isFocus
+          ? 'h-1.5 w-6 rounded-full bg-[#00FF66]'
+          : 'h-1.5 w-6 rounded-full bg-[#FF5E00]';
       } else {
-        btn.textContent = appState.totalMarathonElapsed > 0 ? 'Resume' : 'Start';
-        statusPill.textContent = appState.totalMarathonElapsed > 0 ? 'Paused' : 'Ready';
-        statusPill.className = 'px-2.5 py-1 rounded-full bg-surface-800 border border-slate-700/80 text-slate-300';
+        modeLabel.textContent = `COUNTDOWN TARGET (${state.targetHours}H ${state.targetMinutes}M)`;
+        barTag.textContent = 'COUNTDOWN';
+        cycleBadge.classList.add('hidden');
+        skipBtn.classList.add('hidden');
+        progressWrap.classList.remove('hidden');
+
+        const totalTarget = getCountdownDurationSeconds();
+        const pct = totalTarget > 0 ? Math.min(100, Math.max(0, ((totalTarget - state.timerSeconds) / totalTarget) * 100)) : 0;
+        progressBar.style.width = `${pct}%`;
+        activeBar.className = 'h-1.5 w-6 rounded-full bg-[#FF5E00]';
       }
-    }
 
-    function renderTimerDisplay() {
-      const display = document.getElementById('live-timer-display');
-      const sublabel = document.getElementById('timer-sublabel');
-      const totalElapsedEl = document.getElementById('total-marathon-elapsed');
-      const modeBadge = document.getElementById('overlay-mode-badge');
-      const pomoBadge = document.getElementById('pomodoro-phase-badge');
-      const pomoSwitchBtn = document.getElementById('btn-switch-pomodoro-phase');
+      // Status Pill & Toggle Button
+      const dot = document.getElementById('hud-status-dot');
+      const statusText = document.getElementById('hud-status-text');
+      const toggleBtn = document.getElementById('btn-timer-toggle');
 
-      display.textContent = formatHMS(appState.timerSeconds);
-      totalElapsedEl.textContent = formatHMS(appState.totalMarathonElapsed);
-
-      if (appState.timerMode === 'stopwatch') {
-        modeBadge.textContent = 'Stopwatch (Open-Ended)';
-        sublabel.textContent = 'MARATHON STOPWATCH (HH:MM:SS)';
-        pomoBadge.classList.add('hidden');
-        pomoSwitchBtn.classList.add('hidden');
-      } else if (appState.timerMode === 'pomodoro') {
-        modeBadge.textContent = 'Pomodoro (25/5 min)';
-        sublabel.textContent = appState.pomodoroPhase === 'focus' ? 'POMODORO FOCUS SESSION' : 'POMODORO SHORT BREAK';
-        pomoBadge.classList.remove('hidden');
-        pomoBadge.textContent = appState.pomodoroPhase === 'focus' ? 'Focus (25m)' : 'Break (5m)';
-        pomoSwitchBtn.classList.remove('hidden');
+      if (state.isRunning) {
+        if (state.timerMode === 'pomodoro' && state.pomodoroPhase === 'break') {
+          dot.className = 'h-2 w-2 rounded-full bg-[#FF5E00] animate-pulse';
+          statusText.textContent = 'BREAK';
+          statusText.className = 'text-[11px] font-mono font-bold tracking-widest uppercase text-[#FF5E00]';
+        } else {
+          dot.className = 'h-2 w-2 rounded-full bg-[#00FF66] animate-pulse';
+          statusText.textContent = 'ON AIR';
+          statusText.className = 'text-[11px] font-mono font-bold tracking-widest uppercase text-[#00FF66]';
+        }
+        toggleBtn.textContent = 'Pause';
       } else {
-        modeBadge.textContent = 'Marathon Countdown';
-        sublabel.textContent = `MARATHON COUNTDOWN (${appState.targetHours}H ${appState.targetMinutes}M)`;
-        pomoBadge.classList.add('hidden');
-        pomoSwitchBtn.classList.add('hidden');
+        dot.className = 'h-2 w-2 rounded-full bg-[#FF5E00]';
+        statusText.textContent = state.totalFocusSeconds > 0 ? 'PAUSED' : 'STANDBY';
+        statusText.className = 'text-[11px] font-mono font-bold tracking-widest uppercase text-[#FF5E00]';
+        toggleBtn.textContent = state.totalFocusSeconds > 0 ? 'Resume' : 'Start';
       }
+
+      // Telemetry Metrics
+      document.getElementById('metric-total-focus').textContent = formatHMS(state.totalFocusSeconds);
+      document.getElementById('metric-sessions-count').textContent = String(state.completedCycles).padStart(2, '0');
+
+      const totalTasks = state.tasks.length;
+      const doneTasks = state.tasks.filter((t) => t.done).length;
+      const compPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+      document.getElementById('metric-completion-pct').textContent = `${compPct}%`;
     }
 
-    function renderOverlayDetails() {
-      const brandBadge = document.getElementById('live-brand-badge');
-      const creatorEl = document.getElementById('live-creator-name');
-      const sessionEl = document.getElementById('live-session-name');
+    // ==================== AGENDA CHECKLIST LOGIC ====================
+    function renderAgendaTasks() {
+      const listEl = document.getElementById('agenda-task-list');
+      const countBadge = document.getElementById('agenda-badge-count');
+      const progressBar = document.getElementById('agenda-progress-bar');
 
-      const brand = (appState.brandName || 'Sarvodaya Adhyeta').trim();
-      const creator = (appState.channelName || '').trim();
-      const session = (appState.sessionName || '').trim();
+      const total = state.tasks.length;
+      const done = state.tasks.filter((t) => t.done).length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
 
-      brandBadge.textContent = brand;
-      creatorEl.textContent = creator ? `${creator} • Marathon Stream` : 'Marathon Study Stream';
-      sessionEl.textContent = session || 'Live Marathon Study Session';
-    }
-
-    // ==================== TASK CHECKLIST LOGIC ====================
-    function renderTaskList() {
-      const listEl = document.getElementById('live-task-list');
-      const progressText = document.getElementById('tasks-progress-text');
-      const progressBar = document.getElementById('tasks-progress-bar');
-
-      const total = appState.tasks.length;
-      const doneCount = appState.tasks.filter((t) => t.done).length;
-      progressText.textContent = `${doneCount} / ${total} Done`;
-
-      const pct = total > 0 ? Math.round((doneCount / total) * 100) : 0;
+      countBadge.textContent = `${done} / ${total} COMPLETED`;
       progressBar.style.width = `${pct}%`;
 
       if (total === 0) {
         listEl.innerHTML = `
-          <li class="rounded-xl bg-surface-850/70 border border-dashed border-slate-700/80 p-4 text-center text-xs text-slate-400">
-            Aaj ke tasks add nahi hain. Upar ya neeche se task add karo!
+          <li class="rounded-2xl bg-obsidian-950/60 border border-dashed border-white/10 p-5 text-center text-xs text-slate-400">
+            No agenda items configured. Add a study milestone below.
           </li>`;
         return;
       }
 
-      listEl.innerHTML = appState.tasks
+      listEl.innerHTML = state.tasks
         .map(
           (task, idx) => `
           <li
-            onclick="toggleTaskDone(${idx})"
-            class="group flex items-center justify-between gap-3 rounded-xl px-3.5 py-2.5 border transition cursor-pointer select-none ${
+            onclick="toggleAgendaTask(${idx})"
+            class="group flex items-center justify-between gap-3 rounded-2xl px-4 py-3 border transition-all cursor-pointer select-none ${
               task.done
-                ? 'bg-surface-950/60 border-slate-800/60 text-slate-500'
-                : 'bg-surface-850/90 hover:bg-surface-800 border-slate-700/70 text-slate-100'
+                ? 'bg-obsidian-950/50 border-white/[0.04] text-slate-500'
+                : 'bg-obsidian-950/85 hover:bg-obsidian-850 border-white/[0.08] text-slate-100'
             }"
           >
-            <div class="flex items-center gap-3 min-w-0">
-              <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border text-xs font-bold transition ${
+            <div class="flex items-center gap-3.5 min-w-0">
+              <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border text-xs font-extrabold transition-all ${
                 task.done
-                  ? 'bg-brand-500 border-brand-500 text-white'
-                  : 'border-slate-500 group-hover:border-brand-400 text-transparent'
+                  ? 'bg-[#00FF66] border-[#00FF66] text-obsidian-950 shadow-sm shadow-[#00FF66]/40'
+                  : 'border-slate-600 group-hover:border-[#00FF66] text-transparent'
               }">
                 ✓
               </span>
-              <span class="text-xs sm:text-sm font-medium truncate ${task.done ? 'line-through text-slate-500' : 'text-slate-100'}">
+              <span class="text-xs sm:text-sm font-medium leading-snug ${
+                task.done ? 'line-through text-slate-500' : 'text-slate-100'
+              }">
                 ${escapeHtml(task.text)}
               </span>
             </div>
             <button
               type="button"
-              onclick="event.stopPropagation(); removeTask(${idx})"
-              title="Remove task"
-              class="text-slate-500 hover:text-rose-400 text-xs px-1.5 py-0.5 rounded transition cursor-pointer shrink-0"
+              onclick="event.stopPropagation(); deleteAgendaTask(${idx})"
+              title="Remove item"
+              class="opacity-0 group-hover:opacity-100 focus:opacity-100 text-slate-500 hover:text-[#FF5E00] text-xs px-1.5 py-0.5 rounded transition-opacity cursor-pointer shrink-0"
             >
               ✕
             </button>
@@ -1105,8 +1379,8 @@ Math — Percentage chapter</textarea>
         .join('');
     }
 
-    function escapeHtml(str) {
-      return String(str || '')
+    function escapeHtml(text) {
+      return String(text || '')
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
@@ -1114,94 +1388,121 @@ Math — Percentage chapter</textarea>
         .replace(/'/g, '&#039;');
     }
 
-    function toggleTaskDone(index) {
-      if (!appState.tasks[index]) return;
-      appState.tasks[index].done = !appState.tasks[index].done;
-      renderTaskList();
+    function toggleAgendaTask(index) {
+      if (!state.tasks[index]) return;
+      state.tasks[index].done = !state.tasks[index].done;
+      saveStateToStorage();
+      renderAgendaTasks();
+      renderBroadcastHud();
     }
 
-    function removeTask(index) {
-      appState.tasks.splice(index, 1);
-      syncTasksTextareaFromState();
-      renderTaskList();
+    function deleteAgendaTask(index) {
+      state.tasks.splice(index, 1);
+      saveStateToStorage();
+      renderAgendaTasks();
+      renderBroadcastHud();
     }
 
-    function handleQuickAddTask(event) {
+    function handleInlineTaskAdd(event) {
       event.preventDefault();
-      const input = document.getElementById('quick-task-input');
+      const input = document.getElementById('inline-task-input');
       const val = (input.value || '').trim();
       if (!val) return;
-      appState.tasks.push({ id: Date.now(), text: val, done: false });
+      state.tasks.push({ id: Date.now(), text: val, done: false });
       input.value = '';
-      syncTasksTextareaFromState();
-      renderTaskList();
+      saveStateToStorage();
+      renderAgendaTasks();
+      renderBroadcastHud();
     }
 
-    function resetCompletedTasks() {
-      appState.tasks.forEach((t) => { t.done = false; });
-      renderTaskList();
-      showToast('All tasks unchecked.');
-    }
-
-    function clearAllTasks() {
-      appState.tasks = [];
-      syncTasksTextareaFromState();
-      renderTaskList();
-      showToast('All tasks cleared.');
-    }
-
-    function syncTasksTextareaFromState() {
-      const ta = document.getElementById('tasks-input');
-      if (ta) {
-        ta.value = appState.tasks.map((t) => t.text).join('\n');
-        updateTaskLineCounter();
-      }
-    }
-
-    // ==================== STANDALONE HTML MODAL ====================
-    function openCodeModal() {
-      const modal = document.getElementById('code-modal');
-      const preview = document.getElementById('standalone-html-preview');
-      preview.value = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    // ==================== STANDALONE BROADCAST EXPORT MODAL ====================
+    function openExportModal() {
+      const modal = document.getElementById('export-modal');
+      const textarea = document.getElementById('export-html-textarea');
+      textarea.value = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
       modal.classList.remove('hidden');
     }
 
-    function closeCodeModal() {
-      const modal = document.getElementById('code-modal');
-      modal.classList.add('hidden');
+    function closeExportModal() {
+      document.getElementById('export-modal').classList.add('hidden');
     }
 
-    function copyStandaloneHtml() {
-      const preview = document.getElementById('standalone-html-preview');
-      if (!preview || !preview.value) return;
-      if (copyToClipboardFallback(preview.value)) {
-        showToast('Standalone index.html code copied!');
+    function copyBroadcastHtml() {
+      const textarea = document.getElementById('export-html-textarea');
+      if (!textarea || !textarea.value) return;
+      if (copyTextSafely(textarea.value)) {
+        showToast('Broadcast HTML source copied to clipboard.');
       } else {
-        showToast('Code select karke copy kar lo.');
+        showToast('Select the code and copy manually.');
       }
     }
 
-    function downloadStandaloneHtml() {
+    function downloadBroadcastHtml() {
       try {
-        const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        const source = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([source], { type: 'text/html;charset=utf-8' });
         const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'index.html';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'bro_studies_marathon.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
-        showToast('Downloading index.html...');
-      } catch (err) {
-        showToast('Download failed in this browser context.');
+        showToast('Downloading bro_studies_marathon.html...');
+      } catch (e) {
+        showToast('Download blocked in this preview context.');
       }
     }
 
-    // ==================== INITIALIZATION ====================
+    // ==================== KEYBOARD SHORTCUTS & LIVE CLOCK ====================
+    function updateLiveClockReadout() {
+      const el = document.getElementById('live-clock-readout');
+      if (!el) return;
+      try {
+        const now = new Date();
+        const formatted = now.toLocaleTimeString('en-IN', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+        el.textContent = `${formatted} LOCAL`;
+      } catch (e) {
+        el.textContent = '';
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (state.view !== 'live') return;
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toUpperCase() : '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        toggleTimer();
+      } else if (e.key === 'r' || e.key === 'R') {
+        e.preventDefault();
+        handleResetRequest();
+      } else if (e.key === 'h' || e.key === 'H') {
+        e.preventDefault();
+        toggleManualChromeVisibility();
+      }
+    });
+
+    ['mousemove', 'mousedown', 'touchstart'].forEach((evtName) => {
+      window.addEventListener(evtName, () => {
+        if (state.view === 'live' && !state.chromeHiddenManual) {
+          resetIdleChromeTimer();
+        }
+      }, { passive: true });
+    });
+
+    // ==================== INITIALIZE ====================
     window.addEventListener('DOMContentLoaded', () => {
-      loadStateFromUrlParams();
+      loadSavedState();
+      parseUrlParameters();
+      updateLiveClockReadout();
+      setInterval(updateLiveClockReadout, 15000);
     });
   </script>
 </body>
